@@ -6,7 +6,7 @@ public class ClickToInteract : MonoBehaviour
     [Header("SphereCast settings")]
     [SerializeField] float sphereCastRadius = 1f;
 
-    [SerializeField] float distThresholdToUpdateDest = 0.5f;
+    //[SerializeField] float distThresholdToUpdateDest = 0.5f;
 
 
     NavMeshAgent myNavMeshAgent;
@@ -27,12 +27,7 @@ public class ClickToInteract : MonoBehaviour
 
         if (onWayToInteractDest)
         {
-            // Check if the destination moved
-            if (Vector3.Distance(currentInteractDest, currentInteractingWith.GetInteractionPoint()) >= distThresholdToUpdateDest) // to prevent "kicking" bug, where the player collides with the object and therefore can never reach the destination
-            {
-                currentInteractDest = currentInteractingWith.GetInteractionPoint();
-                myNavMeshAgent.SetDestination(currentInteractDest);
-            }
+            UpdateDest();
 
             // Check if we've reached the destination
             if (!myNavMeshAgent.pathPending)
@@ -41,12 +36,27 @@ public class ClickToInteract : MonoBehaviour
                 {
                     if (!myNavMeshAgent.hasPath || myNavMeshAgent.velocity.sqrMagnitude == 0f)
                     {
-                        onWayToInteractDest = false;
-                        currentInteractingWith.OnInteraction();
+                        OnReachedDest();
                     }
                 }
             }
         }
+    }
+
+    private void OnReachedDest()
+    {
+        onWayToInteractDest = false;
+        currentInteractingWith.OnInteraction();
+    }
+
+    private void UpdateDest()
+    {
+        //if (Vector3.Distance(currentInteractDest, currentInteractingWith.GetInteractionPoint()) >= distThresholdToUpdateDest) // to prevent "kicking" bug, where the player collides with the object and therefore can never reach the destination
+        //{
+        Debug.Log("here " + currentInteractingWith);
+        currentInteractDest = currentInteractingWith.GetInteractionPoint();
+        myNavMeshAgent.SetDestination(currentInteractDest);
+        //}
     }
 
     void InteractWithTapPosition()

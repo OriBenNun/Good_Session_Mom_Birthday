@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BallInteraction : MonoBehaviour, IInteractable
 {
+    [SerializeField] NeedsType needsType = NeedsType.Ball;
     private bool isPickedUp = false;
 
     public InteractType GetInteractType()
@@ -38,5 +39,11 @@ public class BallInteraction : MonoBehaviour, IInteractable
     public GameObject GetInteractableGameObject()
     {
         return this.gameObject;
+    }
+
+
+    public NeedsType GetInteractableNeedsType()
+    {
+        return needsType;
     }
 }

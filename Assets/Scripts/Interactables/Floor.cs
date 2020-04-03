@@ -23,4 +23,9 @@ public class Floor : MonoBehaviour, IInteractable
     {
         return this.gameObject;
     }
+
+    public NeedsType GetInteractableNeedsType()
+    {
+        return NeedsType.None;
+    }
 }

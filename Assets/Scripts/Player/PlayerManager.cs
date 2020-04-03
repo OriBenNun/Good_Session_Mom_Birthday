@@ -9,17 +9,42 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GrabbingPoint grabbingPoint = null;
     [SerializeField] Transform interactablesParent = null;
 
-
+    [Header("Player's Settings")]
+    [SerializeField] float doublebackExitTimer = 1f;
     private bool isHoldingSomething = false;
-    private IInteractable currentObjectHold = null;
+    private IInteractable currentInteractableHold = null;
+
+    private float exitTimer = Mathf.Infinity;
+
 
     private void Awake()
     {
         if (PlayerManager.instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
         }
+    }
+
+    private void Update()
+    {
+        DoubleBackExitApp();
+    }
+
+    private void DoubleBackExitApp()
+    {
+        if (exitTimer < doublebackExitTimer)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            exitTimer = 0;
+        }
+        exitTimer += Time.deltaTime;
     }
 
     public GameObject GetPlayerGameObject()
@@ -31,7 +56,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (isHoldingSomething)
         {
-            currentObjectHold.OnInteraction(); // tells the current held object to get dropped
+            currentInteractableHold.OnInteraction(); // tells the current held object to get dropped
         }
 
         if (!isHoldingSomething)
@@ -39,15 +64,20 @@ public class PlayerManager : MonoBehaviour
             isHoldingSomething = true;
             interactable.transform.position = grabbingPoint.transform.position;
             interactable.transform.parent = grabbingPoint.transform;
-            currentObjectHold = interactable.GetComponent<IInteractable>();
+            currentInteractableHold = interactable.GetComponent<IInteractable>();
         }
     }
 
     public void DropObject()
     {
-        if (currentObjectHold == null) { return; }
+        if (currentInteractableHold == null) { return; }
         isHoldingSomething = false;
-        currentObjectHold.GetInteractableGameObject().transform.parent = interactablesParent;
-        currentObjectHold = null;
+        currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
+        currentInteractableHold = null;
+    }
+
+    public IInteractable GetIInteractableHeld()
+    {
+        return currentInteractableHold;
     }
 }
