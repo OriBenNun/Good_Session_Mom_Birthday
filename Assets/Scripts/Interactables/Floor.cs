@@ -9,8 +9,18 @@ public class Floor : MonoBehaviour, IInteractable
         return InteractType.Move;
     }
 
-    public Vector3 InteractionPoint()
+    public Vector3 GetInteractionPoint()
     {
         return transform.position;
+    }
+
+    public void OnInteraction()
+    {
+        return;
+    }
+
+    public GameObject GetInteractableGameObject()
+    {
+        return this.gameObject;
     }
 }

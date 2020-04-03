@@ -4,8 +4,13 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    Vector3 InteractionPoint(); // sets the position of the interaction
+    void OnInteraction(); // the special method of interaction
+
+    Vector3 GetInteractionPoint(); // sets the position of the interaction
     InteractType GetInteractType(); // the player calls to know the type of interact
+
+
+    GameObject GetInteractableGameObject(); // the player calls to get the gameobject of the interactable
 }
 
 public enum InteractType
