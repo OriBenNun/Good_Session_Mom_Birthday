@@ -28,8 +28,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         usedNeeds = new List<Need>();
         if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
-        PickRandomNeed();
-        needsIndicator.CreateNeedIndicator(currentNeed.popUpObject);
+
+        StartCoroutine("changeNeedSequence");
     }
 
     private void PickRandomNeed()

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ClickToInteract : MonoBehaviour
 {
@@ -53,7 +55,7 @@ public class ClickToInteract : MonoBehaviour
     {
         //if (Vector3.Distance(currentInteractDest, currentInteractingWith.GetInteractionPoint()) >= distThresholdToUpdateDest) // to prevent "kicking" bug, where the player collides with the object and therefore can never reach the destination
         //{
-        Debug.Log("here " + currentInteractingWith);
+        //Debug.Log("here " + currentInteractingWith);
         currentInteractDest = currentInteractingWith.GetInteractionPoint();
         myNavMeshAgent.SetDestination(currentInteractDest);
         //}
@@ -63,7 +65,6 @@ public class ClickToInteract : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.SphereCastAll(ray, sphereCastRadius);
-
         if (hits.Length > 0)
         {
             for (int i = 0; i <= hits.Length - 1; i++)

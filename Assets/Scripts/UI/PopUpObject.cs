@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PopUpObject : MonoBehaviour , IInteractable
+public class PopUpObject : MonoBehaviour
 {
     [SerializeField] float floatingSpeed = 2f;
     [SerializeField] float floatingHeight = 2f;
@@ -34,33 +34,6 @@ public class PopUpObject : MonoBehaviour , IInteractable
 
     private float CalculateXPopRelativeToPlayer()
     {
-        return clientTransform.position.x + ((0 - clientTransform.position.x) / popZOffset);
-    }
-
-    public void OnInteraction()
-    {
-        Debug.Log("Im never happening");
-        // TODO add help label with the object name / zoon in?
-        clientTransform.GetComponent<NeedsAISystem>().OnInteraction(); // calls on the Client, like the player pressed him
-    }
-
-    public Vector3 GetInteractionPoint()
-    {
-        return clientTransform.GetComponent<NeedsAISystem>().GetInteractionPoint();
-    }
-
-    public InteractType GetInteractType()
-    {
-        return InteractType.Interact;
-    }
-
-    public GameObject GetInteractableGameObject()
-    {
-        return this.gameObject;
-    }
-
-    public NeedsType GetInteractableNeedsType()
-    {
-        return clientTransform.GetComponent<NeedsAISystem>().GetCurrentNeed().GetNeedsType();
+        return clientTransform.position.x + ((0 - clientTransform.position.x) / popXOffset);
     }
 }
