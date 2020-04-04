@@ -9,7 +9,7 @@ public class Need : ScriptableObject
     [SerializeField] public bool needObject = false;
     [SerializeField] public GameObject interactablePrefab = null;
     [SerializeField] public Animation[] animations = null;
-    [SerializeField] public Sprite popupIcon = null;
+    [SerializeField] public PopUpObject popUpObject = null;
 
     public IInteractable GetObjectInteractable()
     {

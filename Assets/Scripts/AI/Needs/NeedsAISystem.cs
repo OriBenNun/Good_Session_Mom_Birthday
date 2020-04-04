@@ -5,30 +5,31 @@ using UnityEngine;
 public class NeedsAISystem : MonoBehaviour , IInteractable
 {
     [SerializeField] Transform interactionPoint = null;
-    [SerializeField] Need[] needsArray = null;
+    [SerializeField] List<Need> needsList = null;
+
+    [SerializeField] float minTimeBetweenNeeds = 3.5f;
+    [SerializeField] float maxTimeBetweenNeeds = 7f;
+
+    private NeedsIndicator needsIndicator;
 
     private Need currentNeed = null;
-    private List<Need> needsList;
     private List<Need> usedNeeds;
+
+    private bool isInCD = false;
 
     private void Awake()
     {
-        InitializeNeedsList();
-    }
-
-    private void InitializeNeedsList()
-    {
-        needsList = new List<Need>();
-        foreach (Need need in needsArray)
-        {
-            needsList.Add(need);
-        }
+        //InitializeNeedsList();
     }
 
     private void Start()
     {
+        needsIndicator = GetComponent<NeedsIndicator>();
+
         usedNeeds = new List<Need>();
+        if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
         PickRandomNeed();
+        needsIndicator.CreateNeedIndicator(currentNeed.popUpObject);
     }
 
     private void PickRandomNeed()
@@ -51,7 +52,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
             if (usedNeeds.Contains(newNeed))
             {
-                if (Random.Range(0, 100) > 70)
+                if (UnityEngine.Random.Range(0, 100) > 70)
                 {
                     currentNeed = newNeed;
                     break;
@@ -74,19 +75,22 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     private int GenerateRandom()
     {
-        return Random.Range(0, needsList.Count);
+        return UnityEngine.Random.Range(0, needsList.Count);
     }
 
     public void OnInteraction()
     {
-        var playerHeld = PlayerManager.instance.GetIInteractableHeld();
-        if (playerHeld != null)
+        if (!isInCD)
         {
-            Debug.Log(playerHeld.GetInteractableNeedsType() + " @@@@ " + currentNeed.GetNeedsType());
-            if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
+            var playerHeld = PlayerManager.instance.GetIInteractableHeld();
+            if (playerHeld != null)
             {
-                Debug.Log("YAY!");
-                PickRandomNeed();
+                Debug.Log(playerHeld.GetInteractableNeedsType() + " @@@@ " + currentNeed.GetNeedsType());
+                if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
+                {
+                    Debug.Log("YAY!");
+                    StartCoroutine("changeNeedSequence");
+                }
             }
         }
     }
@@ -94,6 +98,22 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     public Vector3 GetInteractionPoint()
     {
         return interactionPoint.position;
+    }
+
+    IEnumerator changeNeedSequence()
+    {
+        isInCD = true;
+        needsIndicator.DestroyNeedIndication();
+        yield return new WaitForSeconds(RandomTimeBetweenNeeds());
+
+        PickRandomNeed();
+        needsIndicator.CreateNeedIndicator(currentNeed.popUpObject);
+        isInCD = false;
+    }
+
+    private float RandomTimeBetweenNeeds()
+    {
+        return Random.Range(minTimeBetweenNeeds, maxTimeBetweenNeeds);
     }
 
     public InteractType GetInteractType()
@@ -109,5 +129,10 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     public NeedsType GetInteractableNeedsType()
     {
         return NeedsType.None;
+    }
+
+    public Need GetCurrentNeed()
+    {
+        return currentNeed;
     }
 }

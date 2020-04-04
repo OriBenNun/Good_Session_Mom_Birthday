@@ -17,4 +17,5 @@ MonoBehaviour:
   interactablePrefab: {fileID: 5937537966267272704, guid: 7080631a4547457439c1d28e722d0725,
     type: 3}
   animations: []
-  popupIcon: {fileID: 0}
+  popUpObject: {fileID: 7893605434535305248, guid: 1fd4d7a49d864814c862ffe88a67659f,
+    type: 3}
