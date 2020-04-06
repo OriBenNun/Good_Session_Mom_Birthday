@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallInteraction : MonoBehaviour, IInteractable
 {
-    [SerializeField] NeedsType needsType = NeedsType.Ball;
+    [SerializeField] NeedsType needsType = NeedsType.BigBall;
     private bool isPickedUp = false;
 
     public InteractType GetInteractType()

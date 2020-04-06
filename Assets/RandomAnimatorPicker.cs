@@ -6,18 +6,18 @@ public class RandomAnimatorPicker : MonoBehaviour
 {
     [SerializeField] float minTimeBetweenAnim = 3f;
     [SerializeField] float maxTimeBetweenAnim = 7f;
+
+    [SerializeField] string[] triggersNames;
     private Animator animator;
     private float timer = 0;
 
     private float currentTimerMax;
-    // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         currentTimerMax = Random.Range(minTimeBetweenAnim, maxTimeBetweenAnim);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (timer < currentTimerMax)
@@ -27,11 +27,12 @@ public class RandomAnimatorPicker : MonoBehaviour
         
         else
         {
+            Debug.Log("here1");
             timer = 0;
             currentTimerMax = Random.Range(minTimeBetweenAnim, maxTimeBetweenAnim);
 
-            var animations = animator.GetCurrentAnimatorClipInfoCount(0);
-            Debug.Log(animations);
+            int rand = Random.Range(0, triggersNames.Length);
+            animator.SetTrigger(triggersNames[rand]);
         }
     }
 }

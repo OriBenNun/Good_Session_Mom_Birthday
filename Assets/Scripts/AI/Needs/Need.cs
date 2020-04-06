@@ -34,6 +34,6 @@ public class Need : ScriptableObject
 public enum NeedsType
 {
     None,
-    Ball,
-    Ball1
+    BigBall,
+    SmallBall
 }

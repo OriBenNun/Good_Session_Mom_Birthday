@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PopUpObject : MonoBehaviour
 {
-    [SerializeField] float floatingSpeed = 2f;
-    [SerializeField] float floatingHeight = 2f;
-    [SerializeField] float popZOffset = 2;
-    [SerializeField] float popXOffset = 4;
+    [SerializeField] float floatingSpeed = 1.5f;
+    [SerializeField] float floatingHeight = 0.4f;
+    [SerializeField] float popZOffset = 15;
+    [SerializeField] float popXOffset = 20;
+
+    //[SerializeField] float rotationSpeed = 2;
 
     private float startingY;
     private Transform clientTransform;
@@ -16,6 +18,11 @@ public class PopUpObject : MonoBehaviour
     {
         clientTransform = GetComponentInParent<NeedsAISystem>().transform;
         startingY = transform.position.y;
+    }
+
+    private void Update()
+    {
+        // transform.Rotate(Vector3.up * Time.deltaTime * rotationSpeed); // causing the background to rotate as well, TODO can fix with another game object above the mesh and the canvas
     }
 
     private void LateUpdate()

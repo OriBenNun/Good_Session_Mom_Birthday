@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class ClickToInteract : MonoBehaviour
 {
@@ -79,7 +77,10 @@ public class ClickToInteract : MonoBehaviour
                             Vector3.Distance(transform.position, interactable.GetInteractionPoint())
                             < myNavMeshAgent.stoppingDistance)
                         {
-                            transform.LookAt(interactable.GetInteractionPoint()); // TODO replace with rotation animation with root animation
+                            if (interactable != PlayerManager.instance.GetIInteractableHeld()) // to fix a bug where you look at a object you hold
+                            {
+                                transform.LookAt(interactable.GetInteractionPoint()); // TODO replace with rotation animation with root animation
+                            }
                         }
 
                         currentInteractingWith = interactable;
@@ -90,6 +91,7 @@ public class ClickToInteract : MonoBehaviour
 
                     else if (interactable.GetInteractType() == InteractType.Move)
                     {
+                        if (onWayToInteractDest) { onWayToInteractDest = false; } // if the player currenty going somewhere but changing his mind and want to walk away
                         myNavMeshAgent.SetDestination(hits[i].point);
                     }
                 }
