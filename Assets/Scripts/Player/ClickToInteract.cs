@@ -13,17 +13,47 @@ public class ClickToInteract : MonoBehaviour
     private bool onWayToInteractDest = false;
     private IInteractable currentInteractingWith = null;
     private Vector3 currentInteractDest;
-    void Start()
+
+    [SerializeField] float minZoomFOV = 20f;
+    [SerializeField] float maxZoomFOV = 105f;
+    [SerializeField] float scrollWheelZoomFactor = 100;
+
+    [SerializeField] private float zoomRequested = 50;
+    [SerializeField] float zoomSpeed = 10;
+    private Vector3 newCamPos;
+    private Vector3 camStartPos;
+    [SerializeField] float camMoveSpeed = 10;
+    [SerializeField] Vector3 cameraOffsetFromPlayer;
+
+    private void Awake()
     {
         myNavMeshAgent = GetComponent<NavMeshAgent>();
+        camStartPos = Camera.main.transform.position;
+        newCamPos = camStartPos;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.touchCount == 2)
+        {
+            PinchZoom();
+        }  // checking for pinch to zoom first
+
+        else if (Input.touchCount > 2)
+        {
+            return;
+        } // TODO some visual explaination, no more than 2 fingers commands
+
+        else if (Input.GetMouseButtonDown(0))
         {
             InteractWithTapPosition();
-        }
+        }  // the main tap handler
+
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            //Debug.Log("herer");
+            Zoom(Input.GetAxis("Mouse ScrollWheel") * scrollWheelZoomFactor);
+        }  // for PC / debugging
 
         if (onWayToInteractDest)
         {
@@ -40,7 +70,49 @@ public class ClickToInteract : MonoBehaviour
                     }
                 }
             }
-        }
+        } // The checking if we should interact with the destination. Interaction get called here
+
+        CameraPosUpdater(); // Updating the position of the camera according to the player
+
+    }
+
+    private void PinchZoom()
+    {
+        Touch touchZero = Input.GetTouch(0);
+        Touch touchOne = Input.GetTouch(1);
+
+        Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+        Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+
+        float prevMagnitude = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+        float currentMagnitude = (touchZero.position - touchOne.position).magnitude;
+
+        float difference = currentMagnitude - prevMagnitude;
+
+        Zoom(difference * 0.05f);
+    }
+
+    private void CameraPosUpdater()
+    {
+        float fraction = (1 - (zoomRequested / maxZoomFOV));
+        var temp = (transform.position - camStartPos) * fraction - (cameraOffsetFromPlayer * fraction);
+
+        newCamPos = new Vector3(camStartPos.x + temp.x, camStartPos.y, camStartPos.z + temp.z);
+    }
+
+    private void LateUpdate()
+    {
+
+        Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, zoomRequested, zoomSpeed * Time.deltaTime);
+
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCamPos, camMoveSpeed * Time.deltaTime);
+
+    }
+
+    private void Zoom(float increment)
+    {
+        float amount = Camera.main.fieldOfView - increment;
+        zoomRequested = Mathf.Clamp(amount, minZoomFOV, maxZoomFOV);
     }
 
     private void OnReachedDest()
