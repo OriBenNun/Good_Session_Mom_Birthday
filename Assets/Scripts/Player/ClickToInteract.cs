@@ -4,30 +4,37 @@ using UnityEngine.AI;
 public class ClickToInteract : MonoBehaviour
 {
     [Header("SphereCast settings")]
-    [SerializeField] float sphereCastRadius = 1f;
+    [SerializeField] float tapSphereCastRadius = .2f;
+    [SerializeField] float checkForObjectSphereCastRadius = .2f;
 
-    //[SerializeField] float distThresholdToUpdateDest = 0.5f;
+    [Header("Player Interaction Settings")]
+    [SerializeField] private float rotationToInteractSpeed = 5f;
 
-
-    NavMeshAgent myNavMeshAgent;
-    private bool onWayToInteractDest = false;
-    private IInteractable currentInteractingWith = null;
-    private Vector3 currentInteractDest;
-
+    [Header("Camera Settings")]
     [SerializeField] float minZoomFOV = 20f;
     [SerializeField] float maxZoomFOV = 105f;
     [SerializeField] float scrollWheelZoomFactor = 100;
 
     [SerializeField] private float zoomRequested = 50;
     [SerializeField] float zoomSpeed = 10;
-    private Vector3 newCamPos;
-    private Vector3 camStartPos;
+
     [SerializeField] float camMoveSpeed = 10;
     [SerializeField] Vector3 cameraOffsetFromPlayer;
 
+    private IInteractable currentInteractingWith = null;
+    private Vector3 currentInteractDest;
+
+    private Vector3 newCamPos;
+    private Vector3 camStartPos;
+
+    private NavMeshAgent mNavMeshAgent;
+
+    private bool onWayToInteractDest = false;
+    private bool isRotatingToInteract = false;
+
     private void Awake()
     {
-        myNavMeshAgent = GetComponent<NavMeshAgent>();
+        mNavMeshAgent = GetComponent<NavMeshAgent>();
         camStartPos = Camera.main.transform.position;
         newCamPos = camStartPos;
     }
@@ -49,28 +56,49 @@ public class ClickToInteract : MonoBehaviour
             InteractWithTapPosition();
         }  // the main tap handler
 
-        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        if (isRotatingToInteract)
         {
-            //Debug.Log("herer");
-            Zoom(Input.GetAxis("Mouse ScrollWheel") * scrollWheelZoomFactor);
-        }  // for PC / debugging
+            var targetRotation = Quaternion.LookRotation(currentInteractDest - transform.position);
 
-        if (onWayToInteractDest)
+            //Debug.Log("target " + targetRotation + " tansform " + transform.rotation);
+            RaycastHit hit;
+            if (Physics.SphereCast(transform.position, checkForObjectSphereCastRadius, transform.forward, out hit))
+            {
+                var temp = hit.transform.GetComponent<IInteractable>();
+                if (temp == currentInteractingWith)
+                {
+                    Debug.Log("here2");
+                    OnReachedDest();
+                    isRotatingToInteract = false;
+                }
+            }
+
+            // Smoothly rotate towards the target point.
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationToInteractSpeed * Time.deltaTime);
+        } // rotates the player to pick up item that within the stoppingdistance range
+
+        else if (onWayToInteractDest)
         {
             UpdateDest();
 
             // Check if we've reached the destination
-            if (!myNavMeshAgent.pathPending)
+            if (!mNavMeshAgent.pathPending)
             {
-                if (myNavMeshAgent.remainingDistance <= myNavMeshAgent.stoppingDistance)
+                if (mNavMeshAgent.remainingDistance <= mNavMeshAgent.stoppingDistance)
                 {
-                    if (!myNavMeshAgent.hasPath || myNavMeshAgent.velocity.sqrMagnitude == 0f)
+                    if (!mNavMeshAgent.hasPath || mNavMeshAgent.velocity.sqrMagnitude == 0f)
                     {
                         OnReachedDest();
                     }
                 }
             }
         } // The checking if we should interact with the destination. Interaction get called here
+        
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            //Debug.Log("herer");
+            Zoom(Input.GetAxis("Mouse ScrollWheel") * scrollWheelZoomFactor);
+        }  // for PC / debugging
 
         CameraPosUpdater(); // Updating the position of the camera according to the player
 
@@ -94,18 +122,55 @@ public class ClickToInteract : MonoBehaviour
 
     private void CameraPosUpdater()
     {
+        // Multiply the offset x and z by the camera position, so the offset wil be in the opposite direction
+        float xMultiplier = 1;
+        float zMultiplier = 1;
+        if (transform.position.x > 0) // checks if the camera is in the left side of the map
+        {
+            xMultiplier = -1;
+        }
+
+        if (transform.position.z > 0) // checks if the camera is in the bottom side of the map
+        {
+            zMultiplier = -1;
+        }
+
+        if (cameraOffsetFromPlayer.x < 0 && xMultiplier < 0)
+        {
+            // nothing because they are both negative
+        }
+        else
+        {
+            //cameraOffsetFromPlayer.x *= xMultiplier;
+        }
+
+        if (cameraOffsetFromPlayer.x < 0 && xMultiplier < 0)
+        {
+            // nothing because they are both negative
+        }
+        else
+        {
+            //cameraOffsetFromPlayer.z *= zMultiplier;
+        }
+
+        var fixedOffset = new Vector3(cameraOffsetFromPlayer.x * xMultiplier, 0, cameraOffsetFromPlayer.z * zMultiplier);
+
+        // Calculates the relative position to the player by the fraction of the zoom
+        // the more you zoom - the closer you get.
         float fraction = (1 - (zoomRequested / maxZoomFOV));
-        var temp = (transform.position - camStartPos) * fraction - (cameraOffsetFromPlayer * fraction);
+
+        var temp = (transform.position - camStartPos) * fraction - (fixedOffset * fraction);
 
         newCamPos = new Vector3(camStartPos.x + temp.x, camStartPos.y, camStartPos.z + temp.z);
+
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCamPos, camMoveSpeed * Time.deltaTime);
+
     }
 
     private void LateUpdate()
     {
 
         Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, zoomRequested, zoomSpeed * Time.deltaTime);
-
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCamPos, camMoveSpeed * Time.deltaTime);
 
     }
 
@@ -127,14 +192,14 @@ public class ClickToInteract : MonoBehaviour
         //{
         //Debug.Log("here " + currentInteractingWith);
         currentInteractDest = currentInteractingWith.GetInteractionPoint();
-        myNavMeshAgent.SetDestination(currentInteractDest);
+        mNavMeshAgent.SetDestination(currentInteractDest);
         //}
     }
 
     void InteractWithTapPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.SphereCastAll(ray, sphereCastRadius);
+        RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
         if (hits.Length > 0)
         {
             for (int i = 0; i <= hits.Length - 1; i++)
@@ -147,11 +212,12 @@ public class ClickToInteract : MonoBehaviour
                         // Checking if the object is not our current object and it within the stopping distance of the navmesh agent, so we could turn around
                         if (interactable != currentInteractingWith &&
                             Vector3.Distance(transform.position, interactable.GetInteractionPoint())
-                            < myNavMeshAgent.stoppingDistance)
+                            < mNavMeshAgent.stoppingDistance)
                         {
                             if (interactable != PlayerManager.instance.GetIInteractableHeld()) // to fix a bug where you look at a object you hold
                             {
-                                transform.LookAt(interactable.GetInteractionPoint()); // TODO replace with rotation animation with root animation
+                                isRotatingToInteract = true;
+                                //transform.LookAt(interactable.GetInteractionPoint()); // TODO replace with rotation animation with root animation
                             }
                         }
 
@@ -164,7 +230,7 @@ public class ClickToInteract : MonoBehaviour
                     else if (interactable.GetInteractType() == InteractType.Move)
                     {
                         if (onWayToInteractDest) { onWayToInteractDest = false; } // if the player currenty going somewhere but changing his mind and want to walk away
-                        myNavMeshAgent.SetDestination(hits[i].point);
+                        mNavMeshAgent.SetDestination(hits[i].point);
                     }
                 }
             }

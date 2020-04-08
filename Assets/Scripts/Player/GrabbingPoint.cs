@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class GrabbingPoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] Transform handR;
+    [SerializeField] Transform handL; // << the gameobject is a child of this hand
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] float moveSmoothSpeed = 5;
+
+    Vector3 startingPos;
+
+    private void Start()
     {
-        
+        startingPos = transform.position;
+    }
+    private void Update()
+    {
+        Vector3 newPos = handL.position + (handR.position - handL.position) / 2;
+        transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * moveSmoothSpeed);
     }
 }
