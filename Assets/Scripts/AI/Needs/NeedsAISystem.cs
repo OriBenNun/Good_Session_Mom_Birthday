@@ -89,6 +89,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
                 if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
                 {
                     Debug.Log("YAY!");
+                    PlayerManager.instance.SuccesfulNeedFulfilled();
                     StartCoroutine("changeNeedSequence");
                 }
             }
@@ -134,5 +135,10 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     public Need GetCurrentNeed()
     {
         return currentNeed;
+    }
+
+    public HoldingObjectType GetHoldingObjectType()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BallInteraction : MonoBehaviour, IInteractable
 {
-    [SerializeField] NeedsType needsType = NeedsType.BigBall;
+    [SerializeField] NeedsType mNeedsType = NeedsType.BigBall;
+    [SerializeField] HoldingObjectType mHoldingObjectType = HoldingObjectType.None;
     private bool isPickedUp = false;
 
     public InteractType GetInteractType()
@@ -21,19 +22,29 @@ public class BallInteraction : MonoBehaviour, IInteractable
     {
         if (!isPickedUp) // so be picked up by the player
         {
-            GetComponent<Rigidbody>().isKinematic = true;
-            PlayerManager.instance.PickUpObject(this.gameObject);
-            isPickedUp = true;
+            BeingPicked();
         }
 
         else // get dropped by the player
         {
-            GetComponent<Rigidbody>().isKinematic = false;
-            PlayerManager.instance.DropObject();
-            isPickedUp = false;
-            GetComponent<Rigidbody>().AddRelativeForce(new Vector3
-                (Random.Range(10f, 20f), Random.Range(20f, 30f), Random.Range(10f, 20f))); // adds some random force for fun
+            BeingDropped();
         }
+    }
+
+    public void BeingDropped()
+    {
+        GetComponent<Rigidbody>().isKinematic = false;
+        PlayerManager.instance.DropObject();
+        isPickedUp = false;
+        GetComponent<Rigidbody>().AddRelativeForce(new Vector3
+            (Random.Range(10f, 20f), Random.Range(20f, 30f), Random.Range(10f, 20f))); // adds some random force for fun
+    }
+
+    public void BeingPicked()
+    {
+        GetComponent<Rigidbody>().isKinematic = true;
+        PlayerManager.instance.PickUpObject(this.gameObject);
+        isPickedUp = true;
     }
 
     public GameObject GetInteractableGameObject()
@@ -44,6 +55,11 @@ public class BallInteraction : MonoBehaviour, IInteractable
 
     public NeedsType GetInteractableNeedsType()
     {
-        return needsType;
+        return mNeedsType;
+    }
+
+    public HoldingObjectType GetHoldingObjectType()
+    {
+        return mHoldingObjectType;
     }
 }

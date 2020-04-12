@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class PlayerManager : MonoBehaviour
 
     private float exitTimer = Mathf.Infinity;
 
+    private PlayerAnimatorController mAnimatorController;
+
+    private float pickupTimeInAnimation = 0.5f;
 
     private void Awake()
     {
@@ -23,6 +27,7 @@ public class PlayerManager : MonoBehaviour
         {
             instance = this;
         }
+        mAnimatorController = GetComponent<PlayerAnimatorController>();
     }
 
     private void Update()
@@ -56,16 +61,27 @@ public class PlayerManager : MonoBehaviour
     {
         if (isHoldingSomething)
         {
-            currentInteractableHold.OnInteraction(); // tells the current held object to get dropped
+            // tells the current held object to get dropped.
+            //the function in the interactable is calling this script's Drop function
+            currentInteractableHold.OnInteraction();
         }
 
         if (!isHoldingSomething)
         {
-            isHoldingSomething = true;
-            interactable.transform.position = grabbingPoint.transform.position;
-            interactable.transform.parent = grabbingPoint.transform;
-            currentInteractableHold = interactable.GetComponent<IInteractable>();
+            StartCoroutine("PickingUpSequence", interactable);
         }
+    }
+
+    private IEnumerator PickingUpSequence(GameObject interactable)
+    {
+        var objectHoldingType = interactable.GetComponent<IInteractable>().GetHoldingObjectType();
+        mAnimatorController.PickupAnimation(objectHoldingType);
+        yield return new WaitForSeconds(pickupTimeInAnimation);
+
+        isHoldingSomething = true;
+        interactable.transform.position = grabbingPoint.transform.position;
+        interactable.transform.parent = grabbingPoint.transform;
+        currentInteractableHold = interactable.GetComponent<IInteractable>();
     }
 
     public void DropObject()
@@ -74,6 +90,22 @@ public class PlayerManager : MonoBehaviour
         isHoldingSomething = false;
         currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
         currentInteractableHold = null;
+        mAnimatorController.ResetAnimToLoco(); // resets the holding animation
+    }
+
+    public void GiveObject()
+    {
+        if (currentInteractableHold == null) { return; }
+        isHoldingSomething = false;
+        currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
+        currentInteractableHold = null;
+        mAnimatorController.ResetAnimToLoco(); // resets the holding animation
+    }
+
+    public void SuccesfulNeedFulfilled()
+    {
+        // TODO UI and VFX
+        currentInteractableHold.OnInteraction(); // to make it get dropped. todo change to actually give and animation and shit
     }
 
     public IInteractable GetIInteractableHeld()

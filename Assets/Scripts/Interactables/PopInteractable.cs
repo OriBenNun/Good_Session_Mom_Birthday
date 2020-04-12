@@ -37,4 +37,8 @@ public class PopInteractable : MonoBehaviour , IInteractable
         return clientTransform.GetComponent<NeedsAISystem>().GetCurrentNeed().GetNeedsType();
     }
 
+    public HoldingObjectType GetHoldingObjectType()
+    {
+        throw new System.NotImplementedException();
+    }
 }

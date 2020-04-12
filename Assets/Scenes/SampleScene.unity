@@ -1091,43 +1091,8 @@ PrefabInstance:
       objectReference: {fileID: 374050647}
     - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
         type: 3}
-      propertyPath: checkForObjectSphereCastRadius
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: rotationToInteractSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: zoomRequested
-      value: 65
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: cameraOffsetFromPlayer.x
-      value: 2.44
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: cameraOffsetFromPlayer.z
-      value: 2.81
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: camMoveSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: scrollWheelZoomFactor
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 2545063649210339654, guid: d5d0d36b531eed443b2d4b2ddd43a417,
-        type: 3}
-      propertyPath: minZoomFOV
-      value: 25
+      propertyPath: zoomSpeed
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 3569297503281979983, guid: d5d0d36b531eed443b2d4b2ddd43a417,
         type: 3}

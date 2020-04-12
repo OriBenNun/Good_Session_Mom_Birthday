@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Need", menuName = "Needs System")]
 public class Need : ScriptableObject
@@ -37,3 +35,12 @@ public enum NeedsType
     BigBall,
     SmallBall
 }
+
+
+public enum HoldingObjectType
+{
+    Big,
+    Small,
+    None
+}
+

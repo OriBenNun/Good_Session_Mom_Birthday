@@ -28,4 +28,9 @@ public class Floor : MonoBehaviour, IInteractable
     {
         return NeedsType.None;
     }
+
+    public HoldingObjectType GetHoldingObjectType()
+    {
+        throw new System.NotImplementedException();
+    }
 }
