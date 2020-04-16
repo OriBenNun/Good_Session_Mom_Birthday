@@ -1,24 +1,12 @@
 fileFormatVersion: 2
-guid: 8b759a50913540b4a866e9712ea086ad
+guid: b2347dcad64880747890aeeff6f830bd
 ModelImporter:
   serializedVersion: 19300
-  internalIDToNameTable: []
-  externalObjects:
+  internalIDToNameTable:
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Green
-    second: {fileID: 2100000, guid: 4adf30f14fa6de142a28df09fb75a2a3, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: LightGreen
-    second: {fileID: 2100000, guid: 9dc646ccbadc88b4798a9ae7cf62a155, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Pole Color
-    second: {fileID: 2100000, guid: 2d51f0ca9c262bc40a964f3cfdca2558, type: 2}
+      74: -3510434765922377105
+    second: SmallBall|SmallBall_PlayWithChild
+  externalObjects: {}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -45,7 +33,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: SmallBall|SmallBall_PlayWithChild
+      takeName: SmallBall|SmallBall_PlayWithChild
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 48
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []

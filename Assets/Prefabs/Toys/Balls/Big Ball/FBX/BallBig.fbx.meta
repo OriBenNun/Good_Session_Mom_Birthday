@@ -1,24 +1,17 @@
 fileFormatVersion: 2
-guid: ea4e470dac3bf604d98f56581d6a4ad1
+guid: a558d8e0a7cb2284c9cae22b2ab2ea44
 ModelImporter:
   serializedVersion: 19300
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: 17975700749724947
+    second: BigBall|BigBall_PlayWIthChild
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Orange
-    second: {fileID: 2100000, guid: 2d004c925006eeb47bef95256915b491, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Pole Color
-    second: {fileID: 2100000, guid: 654b211977a73bf45b4688772752f584, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Purple
-    second: {fileID: 2100000, guid: bea71b61a4511764f9e6470250a889ad, type: 2}
+      name: Texture
+    second: {fileID: 2100000, guid: a9a996dd94084ef45a3fcc613a45c5ec, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -45,7 +38,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: BigBall|BigBall_PlayWIthChild
+      takeName: BigBall|BigBall_PlayWIthChild
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 37
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
