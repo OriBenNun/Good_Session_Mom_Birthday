@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,11 +13,12 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     private NeedsIndicator needsIndicator;
 
+    private AnimatorManager mAnimatorManager;
+
     private Need currentNeed = null;
     private List<Need> usedNeeds;
 
     private bool isInCD = false;
-
     private void Awake()
     {
         //InitializeNeedsList();
@@ -30,6 +32,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
 
         StartCoroutine("changeNeedSequence");
+
+        mAnimatorManager = GetComponent<AnimatorManager>();
     }
 
     private void PickRandomNeed()
@@ -73,6 +77,20 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         Debug.Log("picked need: " + currentNeed.name);
     }
 
+    public Vector3 GetStartAnimationPosition(NeedsType needType)
+    {
+        if (needType == NeedsType.BigBall)
+        {
+            return mAnimatorManager.GetBigBallStartPoint();
+        }
+
+        if (needType == NeedsType.SmallBall)
+        {
+            return mAnimatorManager.GetSmallBallStartPoint();
+        }
+        return Vector3.zero;
+    }
+
     private int GenerateRandom()
     {
         return UnityEngine.Random.Range(0, needsList.Count);
@@ -89,7 +107,13 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
                 if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
                 {
                     Debug.Log("YAY!");
-                    PlayerManager.instance.SuccesfulNeedFulfilled();
+                    PlayerManager.instance.SuccesfulNeedFulfilled(); // drops the ball, need to change to happend in the ball to switch hands
+                    // tell the player to stop hold the ball
+                    // fade away
+                    playerHeld.OnFulfilledNeedBehaviour(this);
+
+                    mAnimatorManager.PlayTriggerAnimationSync(currentNeed.startAnimationTrigger);
+                    AnimationSyncManager.instance.PlaySyncTrigger();
                     StartCoroutine("changeNeedSequence");
                 }
             }
@@ -114,7 +138,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     private float RandomTimeBetweenNeeds()
     {
-        return Random.Range(minTimeBetweenNeeds, maxTimeBetweenNeeds);
+        return UnityEngine.Random.Range(minTimeBetweenNeeds, maxTimeBetweenNeeds);
     }
 
     public InteractType GetInteractType()
@@ -138,6 +162,11 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     }
 
     public HoldingObjectType GetHoldingObjectType()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnFulfilledNeedBehaviour(NeedsAISystem client)
     {
         throw new System.NotImplementedException();
     }

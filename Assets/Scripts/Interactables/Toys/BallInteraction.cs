@@ -62,4 +62,12 @@ public class BallInteraction : MonoBehaviour, IInteractable
     {
         return mHoldingObjectType;
     }
+
+    public void OnFulfilledNeedBehaviour(NeedsAISystem client)
+    {
+        var mAnimator = GetComponent<AnimatorManager>();
+        var position = client.GetStartAnimationPosition(this.mNeedsType);
+        mAnimator.FadeOutAndMoveToStartPosition(position);
+        mAnimator.PlayTriggerAnimationSync("start_PlayWithChild");
+    }
 }

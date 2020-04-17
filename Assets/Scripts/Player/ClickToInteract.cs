@@ -20,6 +20,7 @@ public class ClickToInteract : MonoBehaviour
 
     [SerializeField] float camMoveSpeed = 10;
     [SerializeField] Vector3 cameraOffsetFromPlayer;
+    [SerializeField] float cameraOffsetFromPlayerFixZFactor = 2f;
 
     private IInteractable currentInteractingWith = null;
     private Vector3 currentInteractDest;
@@ -125,6 +126,11 @@ public class ClickToInteract : MonoBehaviour
         // Multiply the offset x and z by the camera position, so the offset wil be in the opposite direction
         float xMultiplier = 1;
         float zMultiplier = 1;
+
+        // To fix the issue with the opposite sides view
+        float fixedZ = cameraOffsetFromPlayer.z;
+
+
         if (transform.position.x > 0) // checks if the camera is in the left side of the map
         {
             xMultiplier = -1;
@@ -133,27 +139,14 @@ public class ClickToInteract : MonoBehaviour
         if (transform.position.z > 0) // checks if the camera is in the bottom side of the map
         {
             zMultiplier = -1;
+
+            // here we adding to the Z factor
+            fixedZ += cameraOffsetFromPlayerFixZFactor;
         }
 
-        if (cameraOffsetFromPlayer.x < 0 && xMultiplier < 0)
-        {
-            // nothing because they are both negative
-        }
-        else
-        {
-            //cameraOffsetFromPlayer.x *= xMultiplier;
-        }
+        fixedZ *= zMultiplier;
 
-        if (cameraOffsetFromPlayer.x < 0 && xMultiplier < 0)
-        {
-            // nothing because they are both negative
-        }
-        else
-        {
-            //cameraOffsetFromPlayer.z *= zMultiplier;
-        }
-
-        var fixedOffset = new Vector3(cameraOffsetFromPlayer.x * xMultiplier, 0, cameraOffsetFromPlayer.z * zMultiplier);
+        var fixedOffset = new Vector3(cameraOffsetFromPlayer.x * xMultiplier, 0, fixedZ);
 
         // Calculates the relative position to the player by the fraction of the zoom
         // the more you zoom - the closer you get.

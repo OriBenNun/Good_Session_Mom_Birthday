@@ -7,6 +7,8 @@ public interface IInteractable
 {
     void OnInteraction(); // the individual method of interaction
 
+    void OnFulfilledNeedBehaviour(NeedsAISystem client); // the object behaviour when a client fulfilled a need with that object
+
     Vector3 GetInteractionPoint(); // sets the position of the interaction
     InteractType GetInteractType(); // the player calls to know the type of interact
 

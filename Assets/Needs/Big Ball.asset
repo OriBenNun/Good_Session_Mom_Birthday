@@ -16,6 +16,7 @@ MonoBehaviour:
   needObject: 1
   interactablePrefab: {fileID: 5937537966267272704, guid: 738b52d8797119441a58c6158040dfc0,
     type: 3}
-  animations: []
-  popUpObject: {fileID: 688761109149372003, guid: 9500e0760afcd1e45b6ae8ec316ccc54,
+  startAnimationTrigger: start_PlayBigBall
+  finishAnimationTrigger: finish_PlayBigBall
+  popUpObject: {fileID: 3415631511964802788, guid: 4216ba6395904ac4388266a96ac3d364,
     type: 3}

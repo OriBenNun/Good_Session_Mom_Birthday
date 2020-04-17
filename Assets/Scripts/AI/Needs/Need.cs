@@ -6,7 +6,8 @@ public class Need : ScriptableObject
     [SerializeField] NeedsType needsType;
     [SerializeField] public bool needObject = false;
     [SerializeField] public GameObject interactablePrefab = null;
-    [SerializeField] public Animation[] animations = null;
+    [SerializeField] public string startAnimationTrigger = null;
+    [SerializeField] public string finishAnimationTrigger = null;
     [SerializeField] public PopUpObject popUpObject = null;
 
     public IInteractable GetObjectInteractable()

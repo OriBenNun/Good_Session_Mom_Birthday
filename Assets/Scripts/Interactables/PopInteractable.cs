@@ -41,4 +41,9 @@ public class PopInteractable : MonoBehaviour , IInteractable
     {
         throw new System.NotImplementedException();
     }
+
+    public void OnFulfilledNeedBehaviour(NeedsAISystem client)
+    {
+        throw new System.NotImplementedException();
+    }
 }

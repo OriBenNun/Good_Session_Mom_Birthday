@@ -6,7 +6,12 @@ ModelImporter:
   - first:
       74: -3510434765922377105
     second: SmallBall|SmallBall_PlayWithChild
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Texture.001
+    second: {fileID: 2100000, guid: 6da4c7c2a7427534b90e2c336fb71d1c, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
