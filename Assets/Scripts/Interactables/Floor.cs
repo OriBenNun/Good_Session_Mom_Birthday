@@ -34,7 +34,17 @@ public class Floor : MonoBehaviour, IInteractable
         throw new System.NotImplementedException();
     }
 
-    public void OnFulfilledNeedBehaviour(NeedsAISystem client)
+    public IEnumerator OnFulfilledNeedBehaviour(NeedsAISystem client)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void FadeObject(bool shouldFade, float speed = 1)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool GetIsCurrentlyInteractable()
     {
         throw new System.NotImplementedException();
     }

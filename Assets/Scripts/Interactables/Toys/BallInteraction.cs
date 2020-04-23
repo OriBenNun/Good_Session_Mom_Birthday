@@ -1,12 +1,31 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BallInteraction : MonoBehaviour, IInteractable
 {
     [SerializeField] NeedsType mNeedsType = NeedsType.BigBall;
     [SerializeField] HoldingObjectType mHoldingObjectType = HoldingObjectType.None;
+    [SerializeField] float applyForceWhenDropped = 2;
+
     private bool isPickedUp = false;
+
+    private bool isInClientUse = false;
+    private bool isInBetweenStates = false; // another bool to squish some bugs when player is spam clicking the ball at the end of animation
+    private bool ableToReposition = false;
+
+    DissolveMaterialCreatorController dissolver;
+    AnimatorManager mAnimator;
+
+
+    private const string startTriggerString = "start_PlayWithChild";
+
+    private const string finishTriggerString = "finish_PlayWithChild";
+
+    private void Awake()
+    {
+        dissolver = GetComponentInChildren<DissolveMaterialCreatorController>();
+        mAnimator = GetComponent<AnimatorManager>();
+    }
 
     public InteractType GetInteractType()
     {
@@ -20,6 +39,8 @@ public class BallInteraction : MonoBehaviour, IInteractable
 
     public void OnInteraction()
     {
+        if (isInClientUse) { return; }
+
         if (!isPickedUp) // so be picked up by the player
         {
             BeingPicked();
@@ -33,18 +54,33 @@ public class BallInteraction : MonoBehaviour, IInteractable
 
     public void BeingDropped()
     {
-        GetComponent<Rigidbody>().isKinematic = false;
-        PlayerManager.instance.DropObject();
+        mAnimator.ToggleNavAndKinematic(false);
+
+        if (PlayerManager.instance.GetIInteractableHeld() == this)
+        {
+            PlayerManager.instance.DropObject();
+        }
+
         isPickedUp = false;
-        GetComponent<Rigidbody>().AddRelativeForce(new Vector3
-            (Random.Range(10f, 20f), Random.Range(20f, 30f), Random.Range(10f, 20f))); // adds some random force for fun
+        mAnimator.ApplyRandomForce(applyForceWhenDropped);
+
+        isInBetweenStates = false;
     }
 
     public void BeingPicked()
     {
-        GetComponent<Rigidbody>().isKinematic = true;
+        mAnimator.ToggleNavAndKinematic(true);
         PlayerManager.instance.PickUpObject(this.gameObject);
         isPickedUp = true;
+
+        isInBetweenStates = false;
+    }
+
+    public void BeingGived()
+    {
+        PlayerManager.instance.GiveObject();
+        isInClientUse = true;
+        //isPickedUp = false;
     }
 
     public GameObject GetInteractableGameObject()
@@ -63,11 +99,62 @@ public class BallInteraction : MonoBehaviour, IInteractable
         return mHoldingObjectType;
     }
 
-    public void OnFulfilledNeedBehaviour(NeedsAISystem client)
+    public IEnumerator OnFulfilledNeedBehaviour(NeedsAISystem client)
     {
-        var mAnimator = GetComponent<AnimatorManager>();
+        isInBetweenStates = true;
+        
+
+        BeingGived();
+
         var position = client.GetStartAnimationPosition(this.mNeedsType);
-        mAnimator.FadeOutAndMoveToStartPosition(position);
-        mAnimator.PlayTriggerAnimationSync("start_PlayWithChild");
+
+        yield return new WaitUntil(() => ableToReposition); // Happening in OnFinishedDissolveEvent, callback by the dissolver
+
+        ableToReposition = false; // reset the bool
+
+        mAnimator.ToggleKinematicAndMoveToPosition(position, true);
+
+        mAnimator.PlayTriggerAnimationSync(startTriggerString);
+
+        yield return new WaitUntil(() => ableToReposition); // kinda like random wait. will be reset at the end of loops fade out, so we could set the finish trigger, which will be actually triggered by the client when all the loops are finished
+
+        ableToReposition = false; // reset the bool
+
+        mAnimator.TriggerAnimationNoSync(finishTriggerString);
+
+        isInClientUse = false;
+    }
+
+    public void FadeObject(bool shouldFade, float speed = 1)
+    {
+        if (dissolver == null) { Debug.LogError("Hey! missing a dissolver on " + name); return; }
+
+        if (shouldFade && dissolver.GetIsVisible())
+        {
+            isInBetweenStates = true;
+            
+            dissolver.StartDissolve();
+            dissolver.OnFinishedDissolve += OnFinishedDissolveEvent;
+        }
+
+        else if (!shouldFade && !dissolver.GetIsVisible())
+        {
+            dissolver.StartReverseDissolve();
+        }
+    }
+
+    private void OnFinishedDissolveEvent()
+    {
+        ableToReposition = true;
+
+        dissolver.OnFinishedDissolve -= OnFinishedDissolveEvent;
+
+        isInBetweenStates = false;
+        
+    }
+
+    public bool GetIsCurrentlyInteractable()
+    {
+        return !isInClientUse && !isInBetweenStates;
     }
 }

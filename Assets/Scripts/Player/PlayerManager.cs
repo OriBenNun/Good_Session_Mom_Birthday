@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -12,6 +13,9 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Player's Settings")]
     [SerializeField] float doublebackExitTimer = 1f;
+
+    public event Action OnPlayerFinishedGiveAnimation;
+
     private bool isHoldingSomething = false;
     private IInteractable currentInteractableHold = null;
 
@@ -96,20 +100,26 @@ public class PlayerManager : MonoBehaviour
     public void GiveObject()
     {
         if (currentInteractableHold == null) { return; }
-        isHoldingSomething = false;
-        currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
-        currentInteractableHold = null;
-        mAnimatorController.ResetAnimToLoco(); // resets the holding animation
+        mAnimatorController.GiveItemTrigger();
     }
 
-    public void SuccesfulNeedFulfilled()
+    public void SuccesfulClientNeedFulfilled()
     {
         // TODO UI and VFX
-        currentInteractableHold.OnInteraction(); // to make it get dropped. todo change to actually give and animation and shit
     }
 
     public IInteractable GetIInteractableHeld()
     {
         return currentInteractableHold;
+    }
+
+    public void FinishedGiveAnimation()
+    {
+        OnPlayerFinishedGiveAnimation?.Invoke();
+
+        isHoldingSomething = false;
+        currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
+        currentInteractableHold = null;
+        mAnimatorController.ResetAnimToLoco(); // resets the holding animation
     }
 }

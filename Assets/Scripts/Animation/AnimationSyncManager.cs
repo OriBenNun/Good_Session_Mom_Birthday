@@ -17,13 +17,10 @@ public class AnimationSyncManager : MonoBehaviour
     }
     #endregion
 
-    public event Action onReadyToSyncTrigger;
+    public event Action OnReadyToSyncTrigger;
 
     public void PlaySyncTrigger()
     {
-        if (onReadyToSyncTrigger != null)
-        {
-            onReadyToSyncTrigger();
-        }
+        OnReadyToSyncTrigger?.Invoke();
     }
 }

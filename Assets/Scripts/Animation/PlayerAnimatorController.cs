@@ -69,4 +69,9 @@ public class PlayerAnimatorController : MonoBehaviour
         SetHoldingTypeAnimationState(HoldingObjectType.None);
         mAnimator.SetTrigger("backToLoco");
     }
+
+    public void GiveItemTrigger()
+    {
+        mAnimator.SetTrigger("giveItem");
+    }
 }

@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class PopInteractable : MonoBehaviour , IInteractable
 {
-    private Transform clientTransform;
+    private NeedsAISystem m_Client;
 
     private void Start()
     {
-        clientTransform = GetComponentInParent<NeedsAISystem>().transform;
+        m_Client = GetComponentInParent<NeedsAISystem>();
     }
 
     public void OnInteraction()
     {
         // TODO add help label with the object name / zoon in?
-        clientTransform.GetComponent<NeedsAISystem>().OnInteraction(); // calls on the Client, like the player pressed him
+        m_Client.OnInteraction(); // calls on the Client, like the player pressed him
     }
 
     public Vector3 GetInteractionPoint()
     {
-        return clientTransform.GetComponent<NeedsAISystem>().GetInteractionPoint();
+        return m_Client.GetInteractionPoint();
     }
 
     public InteractType GetInteractType()
@@ -34,7 +34,7 @@ public class PopInteractable : MonoBehaviour , IInteractable
 
     public NeedsType GetInteractableNeedsType()
     {
-        return clientTransform.GetComponent<NeedsAISystem>().GetCurrentNeed().GetNeedsType();
+        return m_Client.GetCurrentNeed().GetNeedsType();
     }
 
     public HoldingObjectType GetHoldingObjectType()
@@ -42,8 +42,18 @@ public class PopInteractable : MonoBehaviour , IInteractable
         throw new System.NotImplementedException();
     }
 
-    public void OnFulfilledNeedBehaviour(NeedsAISystem client)
+    public void FadeObject(bool toggle, float speed = 1)
     {
         throw new System.NotImplementedException();
+    }
+
+    public IEnumerator OnFulfilledNeedBehaviour(NeedsAISystem client)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool GetIsCurrentlyInteractable()
+    {
+        return m_Client.GetIsCurrentlyInteractable();
     }
 }

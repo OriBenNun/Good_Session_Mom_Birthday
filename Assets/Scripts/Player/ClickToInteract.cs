@@ -105,6 +105,54 @@ public class ClickToInteract : MonoBehaviour
 
     }
 
+    void InteractWithTapPosition()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
+        if (hits.Length > 0)
+        {
+            for (int i = 0; i <= hits.Length - 1; i++)
+            {
+                var interactable = hits[i].transform.GetComponent<IInteractable>();
+                if (interactable != null)
+                {
+                    if (interactable.GetInteractType() == InteractType.Interact)
+                    {
+
+                        if (!interactable.GetIsCurrentlyInteractable())
+                        {
+                            // Todo fail SFX
+                            return;
+                        }
+
+                        // Checking if the object is not our current object and it within the stopping distance of the navmesh agent, so we could turn around
+                        if (interactable != currentInteractingWith &&
+                            Vector3.Distance(transform.position, interactable.GetInteractionPoint())
+                            < mNavMeshAgent.stoppingDistance)
+                        {
+                            if (interactable != PlayerManager.instance.GetIInteractableHeld()) // to fix a bug where you look at a object you hold
+                            {
+                                isRotatingToInteract = true;
+                            }
+                        }
+
+                        currentInteractingWith = interactable;
+                        currentInteractDest = currentInteractingWith.GetInteractionPoint();
+                        onWayToInteractDest = true;
+                        return;
+                    }
+
+                    else if (interactable.GetInteractType() == InteractType.Move)
+                    {
+                        if (onWayToInteractDest) { onWayToInteractDest = false; } // if the player currenty going somewhere but changing his mind and want to walk away
+                        if (isRotatingToInteract) { isRotatingToInteract = false; } // if the player currenty rotation to object but changing his mind and want to walk away
+                        mNavMeshAgent.SetDestination(hits[i].point);
+                    }
+                }
+            }
+        }
+    }
+
     private void PinchZoom()
     {
         Touch touchZero = Input.GetTouch(0);
@@ -181,52 +229,8 @@ public class ClickToInteract : MonoBehaviour
 
     private void UpdateDest()
     {
-        //if (Vector3.Distance(currentInteractDest, currentInteractingWith.GetInteractionPoint()) >= distThresholdToUpdateDest) // to prevent "kicking" bug, where the player collides with the object and therefore can never reach the destination
-        //{
-        //Debug.Log("here " + currentInteractingWith);
         currentInteractDest = currentInteractingWith.GetInteractionPoint();
         mNavMeshAgent.SetDestination(currentInteractDest);
-        //}
     }
 
-    void InteractWithTapPosition()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
-        if (hits.Length > 0)
-        {
-            for (int i = 0; i <= hits.Length - 1; i++)
-            {
-                var interactable = hits[i].transform.GetComponent<IInteractable>();
-                if (interactable != null)
-                {
-                    if (interactable.GetInteractType() == InteractType.Interact)
-                    {
-                        // Checking if the object is not our current object and it within the stopping distance of the navmesh agent, so we could turn around
-                        if (interactable != currentInteractingWith &&
-                            Vector3.Distance(transform.position, interactable.GetInteractionPoint())
-                            < mNavMeshAgent.stoppingDistance)
-                        {
-                            if (interactable != PlayerManager.instance.GetIInteractableHeld()) // to fix a bug where you look at a object you hold
-                            {
-                                isRotatingToInteract = true;
-                                //transform.LookAt(interactable.GetInteractionPoint()); // TODO replace with rotation animation with root animation
-                            }
-                        }
-
-                        currentInteractingWith = interactable;
-                        currentInteractDest = currentInteractingWith.GetInteractionPoint();
-                        onWayToInteractDest = true;
-                        return;
-                    }
-
-                    else if (interactable.GetInteractType() == InteractType.Move)
-                    {
-                        if (onWayToInteractDest) { onWayToInteractDest = false; } // if the player currenty going somewhere but changing his mind and want to walk away
-                        mNavMeshAgent.SetDestination(hits[i].point);
-                    }
-                }
-            }
-        }
-    }
 }
