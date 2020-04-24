@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   needsType: 3
   needObject: 0
-  startAnimationTrigger: start_ChildJumping
-  finishAnimationTrigger: finish_ChildJumping
+  startAnimationTrigger: start_PlayTrampoline
+  finishAnimationTrigger: finish_PlayTrampoline
   popUpObject: {fileID: 4353736223233785177, guid: 5511b265ca4c63249b2b954436be81bb,
     type: 3}

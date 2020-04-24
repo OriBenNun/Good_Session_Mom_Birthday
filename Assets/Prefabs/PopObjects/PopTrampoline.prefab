@@ -128,7 +128,7 @@ PrefabInstance:
     - target: {fileID: -1676484230726832055, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 1
+      value: 0.9848078
       objectReference: {fileID: 0}
     - target: {fileID: -1676484230726832055, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}
@@ -143,7 +143,7 @@ PrefabInstance:
     - target: {fileID: -1676484230726832055, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.17364825
       objectReference: {fileID: 0}
     - target: {fileID: -1676484230726832055, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}
@@ -153,12 +153,17 @@ PrefabInstance:
     - target: {fileID: -1676484230726832055, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 180
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}
       propertyPath: m_Name
       value: Trampoline
+      objectReference: {fileID: 0}
+    - target: {fileID: 586666717960835533, guid: ddb65efd876cd524f98c0e675058280b,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8339153882448536012, guid: ddb65efd876cd524f98c0e675058280b,
         type: 3}

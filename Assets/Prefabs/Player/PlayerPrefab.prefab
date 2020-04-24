@@ -113,6 +113,8 @@ MonoBehaviour:
   grabbingPoint: {fileID: 6856668585626665148}
   interactablesParent: {fileID: 0}
   doublebackExitTimer: 1
+  childPosition: {fileID: 5949699730224889217}
+  isPlayerAbleToControl: 1
 --- !u!114 &865742734
 MonoBehaviour:
   m_ObjectHideFlags: 0

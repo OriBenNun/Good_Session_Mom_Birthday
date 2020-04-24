@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class PlayerAnimatorController : MonoBehaviour
@@ -17,11 +14,14 @@ public class PlayerAnimatorController : MonoBehaviour
 
     private string currentTriggerString = null;
 
+    private bool originalKinematics;
+
     private void Awake()
     {
         mNavMeshAgent = GetComponent<NavMeshAgent>();
         mAnimator = GetComponentInChildren<Animator>();
         mRigidBody = GetComponent<Rigidbody>();
+        originalKinematics = mRigidBody.isKinematic;
     }
     void Update()
     {
@@ -124,7 +124,14 @@ public class PlayerAnimatorController : MonoBehaviour
 
         if (mRigidBody != null)
         {
-            mRigidBody.isKinematic = isKinematic;
+            if (!isKinematic)
+            {
+                mRigidBody.isKinematic = originalKinematics;
+            }
+            else
+            {
+                mRigidBody.isKinematic = isKinematic;
+            }
         }
     }
 

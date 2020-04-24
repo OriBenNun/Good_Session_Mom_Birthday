@@ -126,10 +126,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
             {
                 if (playerHeld != null)
                 {
-                    //Debug.Log(playerHeld.GetInteractableNeedsType() + " @@@@ " + currentNeed.GetNeedsType());
                     if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
                     {
-                        //FulfilledRecieveObjectNeedSequence(playerHeld);
                         StartCoroutine("FulfilledRecieveObjectNeedSequence", playerHeld);
                     }
                 }
@@ -139,9 +137,15 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
             {
                 if (playerHeld == null)
                 {
-                    isHoldingPlayerHand = true;
+                    if (!isHoldingPlayerHand)
+                    {
+                        HoldPlayerHand();
+                    }
 
-                    StartCoroutine("StartHoldPlayerHand");
+                    else
+                    {
+                        StopHoldPlayerHand();
+                    }
                 }
                 else
                 {
@@ -152,7 +156,27 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         }
     }
 
-    private IEnumerator StartHoldPlayerHand()
+    private void StopHoldPlayerHand()
+    {
+        StartCoroutine("StopHoldPlayerHandRoutine");
+
+        isHoldingPlayerHand = false;
+
+        PlayerManager.instance.isHoldingClientHand = false;
+        PlayerManager.instance.currentlyHoldingClient = null;
+    }
+
+    public void HoldPlayerHand()
+    {
+        isHoldingPlayerHand = true;
+
+        PlayerManager.instance.isHoldingClientHand = true;
+        PlayerManager.instance.currentlyHoldingClient = this;
+
+        StartCoroutine("StartHoldPlayerHandRoutine");
+    }
+
+    private IEnumerator StartHoldPlayerHandRoutine()
     {
         // Disable controller on player
         PlayerManager.instance.isPlayerAbleToControl = false;
@@ -172,7 +196,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         AnimationSyncManager.instance.PlaySyncTrigger();
 
         // wait until end of animation
-        yield return new WaitForSeconds(0.8f); // to let the animation to end without headache
+        yield return new WaitForSeconds(0.5f); // to let the animation to end without headache
 
         // fade out both
         this.FadeObject(true);
@@ -215,6 +239,61 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         PlayerManager.instance.isPlayerAbleToControl = true;
 
     }
+
+    private IEnumerator StopHoldPlayerHandRoutine()
+    {
+        // Disable controller on player
+        PlayerManager.instance.isPlayerAbleToControl = false;
+
+        PlayerAnimatorController playerAnimator = PlayerManager.instance.GetPlayerAnimatorController();
+
+        // todo move player to the right position and rotate to the child
+
+        // turn on kinematics on both
+        playerAnimator.ToggleNavAndKinematic(true);
+        mAnimatorManager.ToggleNavAndKinematic(true);
+
+        // fade out both
+        this.FadeObject(true);
+        PlayerManager.instance.FadeObject(true);
+
+        // hide the indicator with a bit of dely, for astetics sake
+        yield return new WaitForSeconds(.5f);
+
+        needsIndicator.HideIndicator(true);
+
+        // wait for dissolve to end
+        yield return new WaitUntil(() => ableToReposition); // Happening in OnFinishedDissolveEvent, callback by the dissolver
+
+        ableToReposition = false; // resets the bool
+
+        // set the child parent back to the Childs transform
+        GameManager.instance.SetGameObjectAsClientsChildren(transform);
+
+        // free the player and child from the holding hands blend tree animation
+        playerAnimator.SetHoldingTypeAnimationState(HoldingObjectType.None);
+        playerAnimator.ResetAnimToLoco();
+
+        mAnimatorManager.SetHoldingHandsAnimationBlend(false);
+        mAnimatorManager.TriggerAnimationNoSync("resetToLoco");
+
+        // fade in both
+        this.FadeObject(false);
+        PlayerManager.instance.FadeObject(false);
+
+        // show the indicator with a bit of dely, for astetics sake
+        yield return new WaitForSeconds(.5f);
+
+        needsIndicator.HideIndicator(false);
+
+        // turn on nav mesh and rigidbody on player.
+        playerAnimator.ToggleNavAndKinematic(false);
+
+        // Enable controller on player
+        PlayerManager.instance.isPlayerAbleToControl = true;
+
+    }
+
 
     private IEnumerator FulfilledRecieveObjectNeedSequence(IInteractable playerHeld)
     {
@@ -305,12 +384,116 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         StartCoroutine("changeNeedSequence");
     }
 
-    public Vector3 GetInteractionPoint()
+    public IEnumerator FulfilledStaticToyNeedSequence(IInteractable staticToy, Vector3 startAnimPos)
     {
-        return interactionPoint.position;
-    }
+        isInNeed = false;
 
-    IEnumerator changeNeedSequence()
+        // destroy the current need indicator
+        needsIndicator.DestroyNeedIndication();
+        // Todo add Ui VFX to the destroied indicator
+
+        // stops current animation
+        mAnimatorManager.StopAnimator();
+
+        PlayerManager.instance.SuccesfulClientNeedFulfilled(); // Todo add effects to player and add to score and shit
+
+
+        #region Free the player and fade the child out
+
+        // Disable controller on player
+        PlayerManager.instance.isPlayerAbleToControl = false;
+
+        PlayerAnimatorController playerAnimator = PlayerManager.instance.GetPlayerAnimatorController();
+
+        // todo move player to the right position and rotate to the child
+
+        // turn on kinematics on both
+        playerAnimator.ToggleNavAndKinematic(true);
+        mAnimatorManager.ToggleNavAndKinematic(true);
+
+        // fade out both
+        this.FadeObject(true);
+        PlayerManager.instance.FadeObject(true);
+
+        // wait for dissolve to end
+        yield return new WaitUntil(() => ableToReposition); // Happening in OnFinishedDissolveEvent, callback by the dissolver
+
+        ableToReposition = false; // resets the bool
+
+        // set the child parent back to the Childs transform
+        GameManager.instance.SetGameObjectAsClientsChildren(transform);
+
+        // free the player and child from the holding hands blend tree animation
+        playerAnimator.SetHoldingTypeAnimationState(HoldingObjectType.None);
+        playerAnimator.ResetAnimToLoco();
+
+        mAnimatorManager.SetHoldingHandsAnimationBlend(false);
+        mAnimatorManager.TriggerAnimationNoSync("resetToLoco");
+
+        // fade in Player
+        PlayerManager.instance.FadeObject(false);
+
+        // turn on nav mesh and rigidbody on player.
+        playerAnimator.ToggleNavAndKinematic(false);
+
+        // Enable controller on player
+        PlayerManager.instance.isPlayerAbleToControl = true;
+
+        #endregion
+
+        // Stores the original position to restore later
+        var originalPos = transform.position;
+
+        // move the client to the Toy's start pos
+        transform.position = startAnimPos;
+
+        // random time to repeat animation
+        var animationTime = UnityEngine.Random.Range(minFulfilledAnimationTime, maxFulfilledAnimationTime);
+
+        // the static toy singed the trigger animation before this routine was called
+
+        // sign the trigger to be synced
+        mAnimatorManager.PlayTriggerAnimationSync(currentNeed.startAnimationTrigger);
+
+        // restarts the animator
+        mAnimatorManager.StartAnimator();
+
+        // play sync animation on both
+        AnimationSyncManager.instance.PlaySyncTrigger();
+
+        // fade in client
+        this.FadeObject(false);
+
+        // wait for the loops to end
+        yield return new WaitForSeconds(animationTime);
+
+        // fade out client
+        this.FadeObject(true);
+
+        // Stop the static toy animation
+        staticToy.FadeObject(true); // using that as the stop animation function.. i know its shit, but i want to get over with it!!!!
+
+        mAnimatorManager.TriggerAnimationNoSync(currentNeed.finishAnimationTrigger);
+
+        // wait for fade out to finish
+        yield return new WaitUntil(() => ableToReposition); // Happening in OnFinishedDissolveEvent, callback by the dissolver
+
+        ableToReposition = false; // resets the bool
+
+        // Restore the client's position and toggle kinematics back
+        mAnimatorManager.ToggleKinematicAndMoveToPosition(originalPos, false);
+
+        // fade in client
+        this.FadeObject(false, 0.5f);
+
+        // reset the InClientUse of StaticToy.. its shit. i know. if passing false thats what happening.
+        staticToy.FadeObject(false);
+
+        StartCoroutine("changeNeedSequence");
+    } // Being called by the static toy
+
+
+    private IEnumerator changeNeedSequence()
     {
         isInCD = true;
         yield return new WaitForSeconds(RandomTimeBetweenNeeds());
@@ -353,9 +536,14 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         }
     }
 
+    public Vector3 GetInteractionPoint()
+    {
+        return interactionPoint.position;
+    }
+
     public InteractType GetInteractType()
     {
-        return InteractType.Interact;
+        return InteractType.Client;
     }
 
     public GameObject GetInteractableGameObject()
@@ -365,7 +553,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     public NeedsType GetInteractableNeedsType()
     {
-        return NeedsType.None;
+        return currentNeed.GetNeedsType();
     }
 
     public Need GetCurrentNeed()

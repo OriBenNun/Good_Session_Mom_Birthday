@@ -29,7 +29,7 @@ public class BallInteraction : MonoBehaviour, IInteractable
 
     public InteractType GetInteractType()
     {
-        return InteractType.Interact;
+        return InteractType.PickableToy;
     }
 
     public Vector3 GetInteractionPoint()

@@ -20,6 +20,7 @@ public class PlayerManager : MonoBehaviour
     public event Action OnPlayerFinishedGiveAnimation;
 
     private bool isHoldingSomething = false;
+
     private IInteractable currentInteractableHold = null;
 
     private float exitTimer = Mathf.Infinity;
@@ -31,6 +32,10 @@ public class PlayerManager : MonoBehaviour
     private DissolveMaterialCreatorController dissolver;
 
     public bool isPlayerAbleToControl = true;
+
+    public bool isHoldingClientHand = false;
+
+    public IInteractable currentlyHoldingClient = null;
 
     private void Awake()
     {

@@ -24,12 +24,12 @@ public class PopInteractable : MonoBehaviour , IInteractable
 
     public InteractType GetInteractType()
     {
-        return InteractType.Interact;
+        return m_Client.GetInteractType();
     }
 
     public GameObject GetInteractableGameObject()
     {
-        return this.gameObject;
+        return m_Client.GetInteractableGameObject();
     }
 
     public NeedsType GetInteractableNeedsType()

@@ -14,7 +14,6 @@ public class AnimatorManager : MonoBehaviour
     [SerializeField] private Transform bigBallStartPoint = null;
     [SerializeField] private Transform smallBallStartPoint = null;
 
-    [SerializeField] private Transform childTrampolineStartPoint = null;
     [SerializeField] private bool isGotBlendTrees = false;
     [SerializeField] float blendSmoothFactor = 7f;
 
@@ -23,7 +22,9 @@ public class AnimatorManager : MonoBehaviour
 
     private bool isHoldingHands = false;
 
-    private void Start()
+    private bool originalKinematics;
+
+    private void Awake()
     {
         mChildrenAnimator = GetComponentInChildren<Animator>();
         if (mChildrenAnimator == null)
@@ -39,9 +40,9 @@ public class AnimatorManager : MonoBehaviour
         }
 
         mRigidBody = GetComponent<Rigidbody>();
-        if (mRigidBody == null)
+        if (mRigidBody != null)
         {
-            //Debug.Log("game object " + name + " doesnt have any rigidbody");
+            originalKinematics = mRigidBody.isKinematic;
         }
     }
 
@@ -111,7 +112,14 @@ public class AnimatorManager : MonoBehaviour
 
         if (mRigidBody != null)
         {
-            mRigidBody.isKinematic = isKinematic;
+            if (!isKinematic)
+            {
+                mRigidBody.isKinematic = originalKinematics;
+            }
+            else
+            {
+                mRigidBody.isKinematic = isKinematic;
+            }
         }
     }
 
@@ -131,11 +139,6 @@ public class AnimatorManager : MonoBehaviour
     public Vector3 GetSmallBallStartPoint()
     {
         return smallBallStartPoint.position;
-    }
-
-    public Vector3 GetTrampolineStartPoint()
-    {
-        return childTrampolineStartPoint.position;
     }
 
     public void StopAnimator()
