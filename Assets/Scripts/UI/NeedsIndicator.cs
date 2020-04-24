@@ -15,7 +15,6 @@ public class NeedsIndicator : MonoBehaviour
     public void CreateNeedIndicator(PopUpObject popUpObject)
     {
         currentNeedObject = Instantiate(popUpObject.gameObject, popUpInstatiatePos.position, Quaternion.identity, this.transform);
-        //currentNeedObject.transform.localScale = scaleModifier;
 
         currentCanvas = Instantiate(popupBackgroung, currentNeedObject.transform);
 
@@ -27,5 +26,10 @@ public class NeedsIndicator : MonoBehaviour
         // TODO vfx for that
         Destroy(currentNeedObject);
         currentNeedObject = null;
+    }
+
+    public void HideIndicator(bool isHidden)
+    {
+        currentNeedObject.SetActive(!isHidden);
     }
 }

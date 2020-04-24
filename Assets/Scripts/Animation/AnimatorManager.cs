@@ -14,7 +14,14 @@ public class AnimatorManager : MonoBehaviour
     [SerializeField] private Transform bigBallStartPoint = null;
     [SerializeField] private Transform smallBallStartPoint = null;
 
+    [SerializeField] private Transform childTrampolineStartPoint = null;
+    [SerializeField] private bool isGotBlendTrees = false;
+    [SerializeField] float blendSmoothFactor = 7f;
+
+
     private string currentTriggerString = null;
+
+    private bool isHoldingHands = false;
 
     private void Start()
     {
@@ -36,6 +43,35 @@ public class AnimatorManager : MonoBehaviour
         {
             //Debug.Log("game object " + name + " doesnt have any rigidbody");
         }
+    }
+
+    void Update()
+    {
+        if (isGotBlendTrees)
+        {
+            UpdateAnimationBlendTrees();
+        }
+    }
+
+    private void UpdateAnimationBlendTrees()
+    {
+        if (!isHoldingHands)
+        {
+            // sets the locomotion blend float for animator
+            mChildrenAnimator.SetFloat("locomotionBlend", Mathf.Lerp(0, 1, mNavMeshAgent.velocity.sqrMagnitude * Time.deltaTime * blendSmoothFactor));
+        } // talking with the locomotion blendtree
+
+        else
+        {
+            // sets the holding Big blend float for animator
+            mChildrenAnimator.SetFloat("holdingHandBlend", Mathf.Lerp(0, 1, PlayerManager.instance.GetPlayerAnimatorController().AnimationMovementSpeed()));
+        } // talking with the HoldingBig blendtree
+
+    } // sets the float as the velocity formula for the right blend tree
+
+    public void SetHoldingHandsAnimationBlend(bool isHoldingHandsToggle)
+    {
+        isHoldingHands = isHoldingHandsToggle;
     }
 
     public void PlayTriggerAnimationSync(string triggerString)
@@ -97,6 +133,11 @@ public class AnimatorManager : MonoBehaviour
         return smallBallStartPoint.position;
     }
 
+    public Vector3 GetTrampolineStartPoint()
+    {
+        return childTrampolineStartPoint.position;
+    }
+
     public void StopAnimator()
     {
         mChildrenAnimator.speed = 0;
@@ -106,12 +147,6 @@ public class AnimatorManager : MonoBehaviour
     {
         mChildrenAnimator.speed = 1;
     }
-/*
-    public float GetCurrentAnimationLengthForLoops(int numOfLoops)
-    {
-        Debug.Log("Should wait for " + mChildrenAnimator.runtimeAnimatorController.animationClips[].length * numOfLoops + " which is " + numOfLoops + " loops");
-        return mChildrenAnimator.GetCurrentAnimatorStateInfo(0).length * numOfLoops;
-    }*/
 
     public void ApplyRandomForce(float strength = 1)
     {

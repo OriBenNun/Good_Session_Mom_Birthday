@@ -14,6 +14,9 @@ public class PlayerManager : MonoBehaviour
     [Header("Player's Settings")]
     [SerializeField] float doublebackExitTimer = 1f;
 
+    [Header("Holding Child's Hand")]
+    [SerializeField] Transform childPosition = null;
+
     public event Action OnPlayerFinishedGiveAnimation;
 
     private bool isHoldingSomething = false;
@@ -25,6 +28,10 @@ public class PlayerManager : MonoBehaviour
 
     private float pickupTimeInAnimation = 0.5f;
 
+    private DissolveMaterialCreatorController dissolver;
+
+    public bool isPlayerAbleToControl = true;
+
     private void Awake()
     {
         if (PlayerManager.instance == null)
@@ -32,6 +39,8 @@ public class PlayerManager : MonoBehaviour
             instance = this;
         }
         mAnimatorController = GetComponent<PlayerAnimatorController>();
+
+        dissolver = GetComponentInChildren<DissolveMaterialCreatorController>();
     }
 
     private void Update()
@@ -121,5 +130,31 @@ public class PlayerManager : MonoBehaviour
         currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
         currentInteractableHold = null;
         mAnimatorController.ResetAnimToLoco(); // resets the holding animation
+    }
+
+    public PlayerAnimatorController GetPlayerAnimatorController()
+    {
+        return mAnimatorController;
+    }
+
+    public void FadeObject(bool shouldFade, float speed = 1)
+    {
+        if (dissolver == null) { Debug.LogError("Hey! missing a dissolver on " + name); return; }
+
+        if (shouldFade && dissolver.GetIsVisible())
+        {
+            dissolver.StartDissolve(speed);
+            //dissolver.OnFinishedDissolve += OnFinishedDissolveEvent;
+        }
+
+        else if (!shouldFade && !dissolver.GetIsVisible())
+        {
+            dissolver.StartReverseDissolve(speed);
+        }
+    }
+
+    public Transform GetChildHoldingHandsTransform()
+    {
+        return childPosition;
     }
 }

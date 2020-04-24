@@ -26,5 +26,6 @@ public interface IInteractable
 public enum InteractType
 {
     Move,
-    Interact
+    Interact,
+    StaticToy
 }

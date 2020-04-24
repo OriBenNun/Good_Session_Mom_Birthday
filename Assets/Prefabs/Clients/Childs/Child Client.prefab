@@ -74,6 +74,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bigBallStartPoint: {fileID: 1758964546046613664}
   smallBallStartPoint: {fileID: 2501610379783343749}
+  childTrampolineStartPoint: {fileID: 0}
+  isGotBlendTrees: 1
+  blendSmoothFactor: 7
 --- !u!1001 &5730791833025359799
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -96,6 +99,17 @@ PrefabInstance:
       propertyPath: m_BaseOffset
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2564011459934781711, guid: 6207044336b0071488b783910756280c,
+        type: 3}
+      propertyPath: needsList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2564011459934781711, guid: 6207044336b0071488b783910756280c,
+        type: 3}
+      propertyPath: needsList.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5809348dfb8c5db4bb2bc5826db68229,
+        type: 2}
     - target: {fileID: 3234070509960260561, guid: 6207044336b0071488b783910756280c,
         type: 3}
       propertyPath: m_LocalPosition.y

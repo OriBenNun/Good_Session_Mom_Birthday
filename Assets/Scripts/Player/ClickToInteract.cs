@@ -61,7 +61,6 @@ public class ClickToInteract : MonoBehaviour
         {
             var targetRotation = Quaternion.LookRotation(currentInteractDest - transform.position);
 
-            //Debug.Log("target " + targetRotation + " tansform " + transform.rotation);
             RaycastHit hit;
             if (Physics.SphereCast(transform.position, checkForObjectSphereCastRadius, transform.forward, out hit))
             {
@@ -107,6 +106,7 @@ public class ClickToInteract : MonoBehaviour
 
     void InteractWithTapPosition()
     {
+        if (!PlayerManager.instance.isPlayerAbleToControl) { return; }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
         if (hits.Length > 0)
@@ -118,7 +118,6 @@ public class ClickToInteract : MonoBehaviour
                 {
                     if (interactable.GetInteractType() == InteractType.Interact)
                     {
-
                         if (!interactable.GetIsCurrentlyInteractable())
                         {
                             // Todo fail SFX

@@ -5,12 +5,12 @@ public class Need : ScriptableObject
 {
     [SerializeField] NeedsType needsType;
     [SerializeField] public bool needObject = false;
-    [SerializeField] public GameObject interactablePrefab = null;
+    //[SerializeField] public GameObject interactablePrefab = null;
     [SerializeField] public string startAnimationTrigger = null;
     [SerializeField] public string finishAnimationTrigger = null;
     [SerializeField] public PopUpObject popUpObject = null;
 
-    public IInteractable GetObjectInteractable()
+/*    public IInteractable GetObjectInteractable()
     {
         var temp = interactablePrefab.GetComponent<IInteractable>();
         if (temp != null)
@@ -22,7 +22,7 @@ public class Need : ScriptableObject
             Debug.LogError("need: " + this.name + "need fixing with the prefab. no IInteractable found");
             return null;
         }
-    }
+    }*/
 
     public NeedsType GetNeedsType()
     {
@@ -34,7 +34,9 @@ public enum NeedsType
 {
     None,
     BigBall,
-    SmallBall
+    SmallBall,
+    Trampoline,
+    Tent
 }
 
 
@@ -42,6 +44,7 @@ public enum HoldingObjectType
 {
     Big,
     Small,
+    Client,
     None
 }
 

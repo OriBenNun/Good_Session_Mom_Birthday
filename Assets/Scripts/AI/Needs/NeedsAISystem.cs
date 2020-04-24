@@ -18,6 +18,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     private AnimatorManager mAnimatorManager;
 
+    private DissolveMaterialCreatorController dissolver;
+
     private Need currentNeed = null;
     private List<Need> usedNeeds;
 
@@ -27,7 +29,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     private bool playerHasFinishedGiveItemAnimation = false;
     private bool ableToReposition = false;
 
-    DissolveMaterialCreatorController dissolver;
+    private bool isHoldingPlayerHand = false;
+
     private void Awake()
     {
         dissolver = GetComponentInChildren<DissolveMaterialCreatorController>();
@@ -118,16 +121,99 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         if (!isInCD && isInNeed)
         {
             var playerHeld = PlayerManager.instance.GetIInteractableHeld();
-            if (playerHeld != null)
+
+            if (currentNeed.needObject)
             {
-                //Debug.Log(playerHeld.GetInteractableNeedsType() + " @@@@ " + currentNeed.GetNeedsType());
-                if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
+                if (playerHeld != null)
                 {
-                    //FulfilledRecieveObjectNeedSequence(playerHeld);
-                    StartCoroutine("FulfilledRecieveObjectNeedSequence", playerHeld);
+                    //Debug.Log(playerHeld.GetInteractableNeedsType() + " @@@@ " + currentNeed.GetNeedsType());
+                    if (playerHeld.GetInteractableNeedsType() == currentNeed.GetNeedsType())
+                    {
+                        //FulfilledRecieveObjectNeedSequence(playerHeld);
+                        StartCoroutine("FulfilledRecieveObjectNeedSequence", playerHeld);
+                    }
+                }
+            }
+            
+            else if (!currentNeed.needObject)
+            {
+                if (playerHeld == null)
+                {
+                    isHoldingPlayerHand = true;
+
+                    StartCoroutine("StartHoldPlayerHand");
+                }
+                else
+                {
+                    // Todo fail SFX
+                    Debug.Log("First empty your hands");
                 }
             }
         }
+    }
+
+    private IEnumerator StartHoldPlayerHand()
+    {
+        // Disable controller on player
+        PlayerManager.instance.isPlayerAbleToControl = false;
+
+        PlayerAnimatorController playerAnimator = PlayerManager.instance.GetPlayerAnimatorController();
+
+        // todo move player to the right position and rotate to the child
+
+        // turn on kinematics on both
+        playerAnimator.ToggleNavAndKinematic(true);
+        mAnimatorManager.ToggleNavAndKinematic(true);
+
+        // play give hand animation on both
+        playerAnimator.PlayTriggerAnimationSync("takeChildHand");
+        mAnimatorManager.PlayTriggerAnimationSync("takePlayerHand");
+
+        AnimationSyncManager.instance.PlaySyncTrigger();
+
+        // wait until end of animation
+        yield return new WaitForSeconds(0.8f); // to let the animation to end without headache
+
+        // fade out both
+        this.FadeObject(true);
+        PlayerManager.instance.FadeObject(true);
+
+        // hide the indicator with a bit of dely, for astetics sake
+        yield return new WaitForSeconds(.5f);
+
+        needsIndicator.HideIndicator(true);
+
+        // wait for dissolve to end
+        yield return new WaitUntil(() => ableToReposition); // Happening in OnFinishedDissolveEvent, callback by the dissolver
+
+        ableToReposition = false; // resets the bool
+
+        // reposition the client as a child in an empty object in player, so they will move together.
+        transform.position = PlayerManager.instance.GetChildHoldingHandsTransform().position;
+        transform.parent = PlayerManager.instance.GetChildHoldingHandsTransform();
+        transform.rotation = PlayerManager.instance.GetChildHoldingHandsTransform().rotation;
+
+        // make the player's nav mesh agent big, so both will be inside?
+
+        // move the player to the holding hands blend tree animation
+        playerAnimator.SetHoldingTypeAnimationState(HoldingObjectType.Client);
+        mAnimatorManager.SetHoldingHandsAnimationBlend(true);
+
+        // fade in both
+        this.FadeObject(false);
+        PlayerManager.instance.FadeObject(false);
+
+        // show the indicator with a bit of dely, for astetics sake
+        yield return new WaitForSeconds(.5f);
+
+        needsIndicator.HideIndicator(false);
+
+        // turn on nav mesh and rigidbody on player.
+        playerAnimator.ToggleNavAndKinematic(false);
+
+        // Enable controller on player
+        PlayerManager.instance.isPlayerAbleToControl = true;
+
     }
 
     private IEnumerator FulfilledRecieveObjectNeedSequence(IInteractable playerHeld)
