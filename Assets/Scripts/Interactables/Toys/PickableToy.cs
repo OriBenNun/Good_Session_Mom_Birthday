@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class BallInteraction : MonoBehaviour, IInteractable
+public class PickableToy : MonoBehaviour, IInteractable
 {
     [SerializeField] NeedsType mNeedsType = NeedsType.BigBall;
     [SerializeField] HoldingObjectType mHoldingObjectType = HoldingObjectType.None;
@@ -106,13 +106,15 @@ public class BallInteraction : MonoBehaviour, IInteractable
 
         BeingGived();
 
-        var position = client.GetStartAnimationPosition(this.mNeedsType);
+        var posRot = client.GetStartAnimationPosition(this.mNeedsType);
 
         yield return new WaitUntil(() => ableToReposition); // Happening in OnFinishedDissolveEvent, callback by the dissolver
 
         ableToReposition = false; // reset the bool
 
-        mAnimator.ToggleKinematicAndMoveToPosition(position, true);
+        mAnimator.ToggleKinematicAndMoveToPosition(posRot.position, true);
+
+        transform.rotation = posRot.rotation;
 
         mAnimator.PlayTriggerAnimationSync(startTriggerString);
 

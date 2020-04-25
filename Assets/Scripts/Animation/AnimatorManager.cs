@@ -5,10 +5,6 @@ using UnityEngine.AI;
 
 public class AnimatorManager : MonoBehaviour
 {
-
-    [SerializeField] private Transform bigBallStartPoint = null;
-    [SerializeField] private Transform smallBallStartPoint = null;
-
     [SerializeField] private bool isGotBlendTrees = false;
     [SerializeField] float blendSmoothFactor = 7f;
 
@@ -108,14 +104,12 @@ public class AnimatorManager : MonoBehaviour
 
     public void ToggleNavAndKinematic(bool isKinematic)
     {
-        Debug.Log("GUGUGU" + name);
         if (mNavMeshAgent != null)
         {
             if (isKinematic)
             {
                 if (mNavMeshAgent.isActiveAndEnabled)
                 {
-                    Debug.Log("BAAAAA" + name);
                     mNavMeshAgent.ResetPath();
                     mNavMeshAgent.enabled = false;
                 }
@@ -150,16 +144,6 @@ public class AnimatorManager : MonoBehaviour
         this.transform.rotation = Quaternion.identity;
 
         ToggleNavAndKinematic(isKinematic);
-    }
-
-    public Vector3 GetBigBallStartPoint()
-    {
-        return bigBallStartPoint.position;
-    }
-
-    public Vector3 GetSmallBallStartPoint()
-    {
-        return smallBallStartPoint.position;
     }
 
     public void StopAnimator()

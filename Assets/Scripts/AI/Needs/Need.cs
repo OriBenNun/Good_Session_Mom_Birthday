@@ -36,7 +36,8 @@ public enum NeedsType
     BigBall,
     SmallBall,
     Trampoline,
-    Tent
+    Tent,
+    Teddy
 }
 
 

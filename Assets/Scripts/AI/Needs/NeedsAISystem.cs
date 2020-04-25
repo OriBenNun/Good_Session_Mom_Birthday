@@ -14,6 +14,10 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     [SerializeField] int minFulfilledAnimationTime = 10;
     [SerializeField] int maxFulfilledAnimationTime = 20;
 
+    [SerializeField] private Transform bigBallStartPoint = null;
+    [SerializeField] private Transform smallBallStartPoint = null;
+    [SerializeField] private Transform teddyStartPoint = null;
+
     private NeedsIndicator needsIndicator;
 
     private AnimatorManager mAnimatorManager;
@@ -102,18 +106,28 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         return UnityEngine.Random.Range(0, needsList.Count);
     }
 
-    public Vector3 GetStartAnimationPosition(NeedsType needType)
+    public Transform GetStartAnimationPosition(NeedsType type)
     {
-        if (needType == NeedsType.BigBall)
+        if (type == NeedsType.BigBall)
         {
-            return mAnimatorManager.GetBigBallStartPoint();
+            return bigBallStartPoint;
         }
 
-        if (needType == NeedsType.SmallBall)
+        if (type == NeedsType.SmallBall)
         {
-            return mAnimatorManager.GetSmallBallStartPoint();
+            return smallBallStartPoint;
         }
-        return Vector3.zero;
+
+        if (type == NeedsType.Teddy)
+        {
+            return teddyStartPoint;
+        }
+
+        else
+        {
+            return null;
+            Debug.LogError("YEA YEA YEA" + name) ;
+        }
     }
 
     public void OnInteraction()
