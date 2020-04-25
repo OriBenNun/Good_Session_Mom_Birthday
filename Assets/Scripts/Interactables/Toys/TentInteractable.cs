@@ -2,26 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrampolineInteractable : MonoBehaviour , IInteractable
+public class TentInteractable : MonoBehaviour , IInteractable
 {
-    [SerializeField] NeedsType mNeedsType = NeedsType.Trampoline;
+    [SerializeField] NeedsType mNeedsType = NeedsType.Tent;
     [SerializeField] HoldingObjectType mHoldingObjectType = HoldingObjectType.Client;
     [SerializeField] Transform interactPoint = null;
-    [SerializeField] private Transform childTrampolineStartPoint = null;
+    [SerializeField] private Transform childTentStartPoint = null;
 
     private bool isInClientUse = false;
-
-    AnimatorManager mAnimator;
-
-
-    private const string startTriggerString = "start_ChildJumping";
-
-    private const string finishTriggerString = "finish_ChildJumping";
-
-    private void Awake()
-    {
-        mAnimator = GetComponent<AnimatorManager>();
-    }
 
     public InteractType GetInteractType()
     {
@@ -47,9 +35,7 @@ public class TrampolineInteractable : MonoBehaviour , IInteractable
                 {
                     isInClientUse = true;
 
-                    mAnimator.PlayTriggerAnimationSync(startTriggerString);
-
-                    StartCoroutine(client.FulfilledStaticToyNeedSequence(this, childTrampolineStartPoint));
+                    StartCoroutine(client.FulfilledStaticToyNeedSequence(this, childTentStartPoint));
                 }
             }
         }
@@ -80,7 +66,7 @@ public class TrampolineInteractable : MonoBehaviour , IInteractable
         // if true passed stops the animation:
         if (shouldFade)
         {
-        mAnimator.TriggerAnimationNoSync(finishTriggerString);
+            //mAnimator.TriggerAnimationNoSync(finishTriggerString);
         }
         else
         {

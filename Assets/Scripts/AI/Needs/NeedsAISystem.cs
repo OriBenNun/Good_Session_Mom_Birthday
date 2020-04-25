@@ -388,7 +388,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         StartCoroutine("changeNeedSequence");
     }
 
-    public IEnumerator FulfilledStaticToyNeedSequence(IInteractable staticToy, Vector3 startAnimPos)
+    public IEnumerator FulfilledStaticToyNeedSequence(IInteractable staticToy, Transform startAnimPos)
     {
         isInNeed = false;
 
@@ -454,8 +454,16 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         // Stores the original position to restore later
         var originalPos = transform.position;
 
+        // Stores the original rotation to restore later if 
+        //var originalRot = transform.rotation;
+
         // move the client to the Toy's start pos
-        transform.position = startAnimPos;
+        transform.position = startAnimPos.position;
+
+        if (staticToy.GetInteractableNeedsType() == NeedsType.Tent)
+        {
+            transform.rotation = startAnimPos.rotation;
+        }
 
         // random time to repeat animation
         var animationTime = UnityEngine.Random.Range(minFulfilledAnimationTime, maxFulfilledAnimationTime);
