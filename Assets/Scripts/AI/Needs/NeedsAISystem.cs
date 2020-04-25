@@ -232,7 +232,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         needsIndicator.HideIndicator(false);
 
-        // turn on nav mesh and rigidbody on player.
+        // turn on nav mesh and rigidbody
         playerAnimator.ToggleNavAndKinematic(false);
 
         // Enable controller on player
@@ -286,8 +286,9 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         needsIndicator.HideIndicator(false);
 
-        // turn on nav mesh and rigidbody on player.
+        // turn on nav mesh and rigidbody
         playerAnimator.ToggleNavAndKinematic(false);
+        mAnimatorManager.ToggleNavAndKinematic(false);
 
         // Enable controller on player
         PlayerManager.instance.isPlayerAbleToControl = true;
@@ -305,6 +306,9 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         // stops current animation
         mAnimatorManager.StopAnimator();
+
+        // disable nav mesh and colliders
+        mAnimatorManager.ToggleNavAndKinematic(true);
 
         if (playerHasFinishedGiveItemAnimation) { playerHasFinishedGiveItemAnimation = false; } // Because it happens from a event, which means all clients get the callback
         
@@ -332,9 +336,6 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         // random number of times to loop animation
         var animationTime = UnityEngine.Random.Range(minFulfilledAnimationTime, maxFulfilledAnimationTime);
-
-        // disable nav mesh and colliders
-        mAnimatorManager.ToggleNavAndKinematic(true);
 
         // play sync animation on both
         mAnimatorManager.PlayTriggerAnimationSync(currentNeed.startAnimationTrigger);
@@ -381,6 +382,9 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         // fade in client
         this.FadeObject(false, 0.5f);
 
+        // enable nav mesh and colliders
+        mAnimatorManager.ToggleNavAndKinematic(false);
+
         StartCoroutine("changeNeedSequence");
     }
 
@@ -398,7 +402,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         PlayerManager.instance.SuccesfulClientNeedFulfilled(); // Todo add effects to player and add to score and shit
 
 
-        #region Free the player and fade the child out
+        #region Free the player, turn HoldPlayerHand to false and and fade the child out
 
         // Disable controller on player
         PlayerManager.instance.isPlayerAbleToControl = false;
@@ -436,11 +440,17 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         // turn on nav mesh and rigidbody on player.
         playerAnimator.ToggleNavAndKinematic(false);
 
+        isHoldingPlayerHand = false;
+
+        PlayerManager.instance.isHoldingClientHand = false;
+        PlayerManager.instance.currentlyHoldingClient = null;
+
         // Enable controller on player
         PlayerManager.instance.isPlayerAbleToControl = true;
 
         #endregion
 
+        #region Start play with static toy sequence
         // Stores the original position to restore later
         var originalPos = transform.position;
 
@@ -464,9 +474,12 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         // fade in client
         this.FadeObject(false);
 
+        #endregion
+
         // wait for the loops to end
         yield return new WaitForSeconds(animationTime);
 
+        #region Finish play with static toy sequence
         // fade out client
         this.FadeObject(true);
 
@@ -488,6 +501,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         // reset the InClientUse of StaticToy.. its shit. i know. if passing false thats what happening.
         staticToy.FadeObject(false);
+
+        #endregion
 
         StartCoroutine("changeNeedSequence");
     } // Being called by the static toy

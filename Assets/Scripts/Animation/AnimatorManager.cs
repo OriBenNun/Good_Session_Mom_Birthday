@@ -5,11 +5,6 @@ using UnityEngine.AI;
 
 public class AnimatorManager : MonoBehaviour
 {
-    private Animator mChildrenAnimator;
-
-    private NavMeshAgent mNavMeshAgent;
-
-    private Rigidbody mRigidBody;
 
     [SerializeField] private Transform bigBallStartPoint = null;
     [SerializeField] private Transform smallBallStartPoint = null;
@@ -17,12 +12,18 @@ public class AnimatorManager : MonoBehaviour
     [SerializeField] private bool isGotBlendTrees = false;
     [SerializeField] float blendSmoothFactor = 7f;
 
+    private Animator mChildrenAnimator;
+    private NavMeshAgent mNavMeshAgent;
+    private Rigidbody mRigidBody;
+
 
     private string currentTriggerString = null;
 
     private bool isHoldingHands = false;
 
     private bool originalKinematics;
+
+    private bool isInIdle;
 
     private void Awake()
     {
@@ -58,13 +59,15 @@ public class AnimatorManager : MonoBehaviour
     {
         if (!isHoldingHands)
         {
+            isInIdle = true; // for the AiIdleAnimation
             // sets the locomotion blend float for animator
             mChildrenAnimator.SetFloat("locomotionBlend", Mathf.Lerp(0, 1, mNavMeshAgent.velocity.sqrMagnitude * Time.deltaTime * blendSmoothFactor));
         } // talking with the locomotion blendtree
 
         else
         {
-            // sets the holding Big blend float for animator
+            isInIdle = false; // for the AiIdleAnimation
+            // sets the holding hands blend float for animator
             mChildrenAnimator.SetFloat("holdingHandBlend", Mathf.Lerp(0, 1, PlayerManager.instance.GetPlayerAnimatorController().AnimationMovementSpeed()));
         } // talking with the HoldingBig blendtree
 
@@ -105,9 +108,27 @@ public class AnimatorManager : MonoBehaviour
 
     public void ToggleNavAndKinematic(bool isKinematic)
     {
+        Debug.Log("GUGUGU" + name);
         if (mNavMeshAgent != null)
         {
-            mNavMeshAgent.enabled = !isKinematic;
+            if (isKinematic)
+            {
+                if (mNavMeshAgent.isActiveAndEnabled)
+                {
+                    Debug.Log("BAAAAA" + name);
+                    mNavMeshAgent.ResetPath();
+                    mNavMeshAgent.enabled = false;
+                }
+            }
+
+            else if (!isKinematic)
+            {
+                mNavMeshAgent.enabled = true;
+            }
+            else
+            {
+                Debug.LogWarning("What is going on with " + name + " nav mesh?");
+            }
         }
 
         if (mRigidBody != null)
@@ -125,10 +146,10 @@ public class AnimatorManager : MonoBehaviour
 
     public void ToggleKinematicAndMoveToPosition(Vector3 position, bool isKinematic)
     {
-        ToggleNavAndKinematic(isKinematic);
-
         this.transform.position = position;
         this.transform.rotation = Quaternion.identity;
+
+        ToggleNavAndKinematic(isKinematic);
     }
 
     public Vector3 GetBigBallStartPoint()
@@ -155,5 +176,10 @@ public class AnimatorManager : MonoBehaviour
     {
         mRigidBody.AddRelativeForce(new Vector3
             (Random.Range(10f, 20f), Random.Range(20f, 30f), Random.Range(10f, 20f)) * strength); // adds some random force for fun
+    }
+
+    public bool GetIsInIdle()
+    {
+        return isInIdle;
     }
 }

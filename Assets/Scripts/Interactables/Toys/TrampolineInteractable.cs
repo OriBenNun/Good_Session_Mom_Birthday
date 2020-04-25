@@ -39,25 +39,20 @@ public class TrampolineInteractable : MonoBehaviour , IInteractable
 
         if (PlayerManager.instance.isHoldingClientHand)
         {
-            Debug.Log("Hey2");
             if (PlayerManager.instance.currentlyHoldingClient != null)
             {
-                Debug.Log("Hey3");
                 NeedsAISystem client = PlayerManager.instance.currentlyHoldingClient.GetInteractableGameObject().GetComponent<NeedsAISystem>();
 
                 if (client.GetInteractableNeedsType() == mNeedsType)
                 {
-                    Debug.Log("Hey4");
                     isInClientUse = true;
 
                     mAnimator.PlayTriggerAnimationSync(startTriggerString);
 
                     StartCoroutine(client.FulfilledStaticToyNeedSequence(this, childTrampolineStartPoint.position));
-
                 }
             }
         }
-
     }
 
     public GameObject GetInteractableGameObject()
