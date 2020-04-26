@@ -174,45 +174,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 5809348dfb8c5db4bb2bc5826db68229,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[2]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[4]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: minTimeBetweenNeeds
-      value: 3.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: maxTimeBetweenNeeds
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: minFulfilledAnimationTime
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 8130715720793884116, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
         type: 3}
       propertyPath: m_Name

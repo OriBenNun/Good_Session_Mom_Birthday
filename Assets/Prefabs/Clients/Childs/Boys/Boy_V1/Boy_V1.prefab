@@ -1,17 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &3351641775898080442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 992165487141270765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bc74490020a2d94e8ae6a48d54b4c79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &7701739174648854708
 Animator:
   serializedVersion: 3
@@ -31,6 +19,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3351641775898080442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992165487141270765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bc74490020a2d94e8ae6a48d54b4c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4664952920909060638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92,45 +92,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 5809348dfb8c5db4bb2bc5826db68229,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[2]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: needsList.Array.data[4]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4,
-        type: 2}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: minTimeBetweenNeeds
-      value: 3.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: maxTimeBetweenNeeds
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 7787548499710455480, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
-        type: 3}
-      propertyPath: minFulfilledAnimationTime
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8130715720793884116, guid: 01c80f3ba3cd4e84bb01346c35d63a23,
         type: 3}

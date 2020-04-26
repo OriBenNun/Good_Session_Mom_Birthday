@@ -51,12 +51,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionPoint: {fileID: 7634592082467449783}
   needsList:
-  - {fileID: 11400000, guid: 3eee81694fad6514995e2d339a8daac7, type: 2}
   - {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4, type: 2}
-  minTimeBetweenNeeds: 3.5
-  maxTimeBetweenNeeds: 7
-  minFulfilledAnimationTime: 10
-  maxFulfilledAnimationTime: 20
+  - {fileID: 11400000, guid: 3eee81694fad6514995e2d339a8daac7, type: 2}
+  - {fileID: 11400000, guid: acbdead4274e16f4d9ef680b7f23f26d, type: 2}
+  - {fileID: 11400000, guid: 3680319d8171e7c438b1fedf856ffc5b, type: 2}
+  - {fileID: 11400000, guid: 5809348dfb8c5db4bb2bc5826db68229, type: 2}
+  minTimeBetweenNeeds: 2
+  maxTimeBetweenNeeds: 13
+  minFulfilledAnimationTime: 5
+  maxFulfilledAnimationTime: 22
+  bigBallStartPoint: {fileID: 0}
+  smallBallStartPoint: {fileID: 0}
+  teddyStartPoint: {fileID: 0}
 --- !u!195 &2154832828611545475
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -106,8 +112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf14964c959b325408b4578041f6569e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bigBallStartPoint: {fileID: 0}
-  smallBallStartPoint: {fileID: 0}
   isGotBlendTrees: 1
   blendSmoothFactor: 7
 --- !u!1 &5196622212723649429
