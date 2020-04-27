@@ -119,7 +119,7 @@ public class PlayerManager : MonoBehaviour
 
     public void SuccesfulClientNeedFulfilled()
     {
-        // TODO UI and VFX
+        GameManager.instance.UpdateFulfilledNeedsProgress(true);
     }
 
     public IInteractable GetIInteractableHeld()

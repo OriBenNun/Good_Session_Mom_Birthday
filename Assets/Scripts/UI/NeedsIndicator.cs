@@ -30,6 +30,9 @@ public class NeedsIndicator : MonoBehaviour
 
     public void HideIndicator(bool isHidden)
     {
-        currentNeedObject.SetActive(!isHidden);
+        if (currentNeedObject != null)
+        {
+            currentNeedObject.SetActive(!isHidden);
+        }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Doozy.Engine.Soundy;
+using Doozy.Engine.Progress;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,24 +16,58 @@ public class GameManager : MonoBehaviour
 
     [Header("Hirarchy Organise")]
     [SerializeField] Transform clientsParentTransform = null;
+    [SerializeField] Transform toysParentTransform = null;
 
     [Header("General Gameplay Settings")]
-    [SerializeField] float levelTimeLengthSeconds = 120;
+    [SerializeField] float levelTimeLengthSeconds = 120; // will not be updated during runtime if changed in inspector
     [SerializeField] Transform[] clientsSpawnPoints;
+    [SerializeField] Transform[] toysSpawnPoints;
 
     [Header("Design Settings")]
-    [SerializeField] float timeBetweenClientsSpawnInStartOfLevel = 1f;
+    [SerializeField] float timeBetweenSpawnInStartOfLevel = 1f;
     [SerializeField] float FadeInSpeedInStartOfLevel = .5f;
+
+    [Header("Sounds")]
+    [SerializeField] SoundyData spawnClientSound;
+    [SerializeField] SoundyData spawnToySound;
+    [SerializeField] SoundyData starTurnedOnSound;
+
+    [Header("HUD")]
+    [SerializeField] Progressor timerProgressor;
+    [SerializeField] Progressor needsFulfilledProgressor;
+    [SerializeField] Image firstStar;
+    [SerializeField] Image firstStarLine;
+    [SerializeField] Image secondStar;
+    [SerializeField] Image secondStarLine;
+    [SerializeField] Image thirdStar;
+    [SerializeField] Image thirdStarLine;
+    [SerializeField] Image filledStarSettings;
+    [SerializeField] Image emptyStarSettings;
+
 
     private int currentLevelLoadedNumber = 0;
     private GameObject[] currentClientsInScene;
+    private List<GameObject> currentToysInScene;
     private Need[] currentLevelNeedsArr; // for the client to ask once it spawned
+
+    private float currentLevelTimer;
+    private float currentLevelFulfilledNeeds;
+
+    private int numberOfStarsTurnedOn;
+
+    private bool isGameInPlayState = false;
+
+
+    private const float destroyDelay = 2f;
+
     private void Awake()
     {
         if (GameManager.instance == null)
         {
             GameManager.instance = this;
         }  // Singelton
+
+        currentLevelTimer = levelTimeLengthSeconds;
     }
 
     private void Start()
@@ -39,13 +76,79 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine("LoadLevelFromConfig", firstLevelNumber);
         }
+
+        timerProgressor.SetMax(levelTimeLengthSeconds);
+        timerProgressor.SetMin(0);
     }
 
-    public void SetGameObjectAsClientsChildren(Transform t)
+    private void Update()
     {
-        t.parent = clientsParentTransform;
+        if (isGameInPlayState)
+        {
+            currentLevelTimer -= Time.deltaTime;
+
+            timerProgressor.SetValue(currentLevelTimer); // updated the HUD timer Doozy progressor value
+        }
+
+        // REMOVE. FOR DEBUGGING
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartCoroutine("DestroyCurrentLevel");
+        }
+
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartCoroutine("LoadLevelFromConfig", ++currentLevelLoadedNumber);
+        }
+    }
+    private IEnumerator DestroyCurrentLevel()
+    {
+        ToggleGameHUDUpdateAndPlayerController(false);
+
+        // Destroy existing clients
+        for (int i = 0; i < currentClientsInScene.Length; i++)
+        {
+            // Fade out client
+            currentClientsInScene[i].GetComponent<NeedsAISystem>().FadeObject(true, FadeInSpeedInStartOfLevel); // Reverse dissolving the client
+
+            // Hide need indicator
+            currentClientsInScene[i].GetComponent<NeedsIndicator>().HideIndicator(true);
+            // todo add VFX
+
+            // Delay between client spawning
+            yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel / 2);
+
+            // Play sfx
+            SoundyManager.Play(spawnClientSound);
+
+            // Destroy Client Gameobject
+            Destroy(currentClientsInScene[i], destroyDelay);
+        }
+
+        // Destroy existing toys
+        for (int i = 0; i < currentToysInScene.Count; i++)
+        {
+            // Fade out client
+            currentToysInScene[i].GetComponent<PickableToy>().FadeObject(true, FadeInSpeedInStartOfLevel); // Reverse dissolving the client
+
+            // Delay between client spawning
+            yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel / 2);
+
+            // Play sfx
+            SoundyManager.Play(spawnToySound);
+
+            // Destroy Client Gameobject
+            Destroy(currentToysInScene[i], destroyDelay);
+        }
+
+        yield return new WaitForSeconds(5);
     }
 
+    /// <summary>
+    /// Instatiating Clients, Toys. as well as reseting the Timer and progress bar for the current level
+    /// </summary>
+    /// <param name="levelNumberToLoad"></param>
+    /// <returns></returns>
     private IEnumerator LoadLevelFromConfig(int levelNumberToLoad)
     {
         // check the level to load
@@ -64,6 +167,7 @@ public class GameManager : MonoBehaviour
         if (levelToLoad == null)
         {
             levelToLoad = levelsConfigs[0];
+            currentLevelLoadedNumber = 1;
             Debug.LogError("Something is wrong with level loader on level number " + levelNumberToLoad + ". loading first level for now");
             Debug.Break();
         }
@@ -74,7 +178,7 @@ public class GameManager : MonoBehaviour
 
         // reset the currentClientsInScene for later use (to destroy at end of level)
         currentClientsInScene = new GameObject[levelToLoad.numberOfClients];
-        
+
         // Making a list for the available client indexes, to not instatiate the same client twice and for diversity between levels
         GameObject[] clientsToLoad = new GameObject[levelToLoad.numberOfClients];
         List<int> availableClientsIndexes = new List<int>();
@@ -99,29 +203,141 @@ public class GameManager : MonoBehaviour
             var newChild = Instantiate(clientsToLoad[i], clientsSpawnPoints[i].position, Quaternion.identity, clientsParentTransform);
             currentClientsInScene[i] = newChild;
 
-            yield return new WaitForSeconds(.1f); // to be sure not to make a condition race with the dissolver of the object
+            yield return new WaitForSeconds(.01f); // to be sure not to make a condition race with the dissolver of the object
 
             // Fade in client
             newChild.GetComponent<NeedsAISystem>().FadeObject(false, FadeInSpeedInStartOfLevel); // Reverse dissolving the client
 
             // Delay between client spawning
-            yield return new WaitForSeconds(timeBetweenClientsSpawnInStartOfLevel);
+            yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel);
+
+            // Play sfx
+            SoundyManager.Play(spawnClientSound);
         }
 
         #endregion
 
-        // instatiate toys by the needs in level
+        #region Instatiate toys by the needs in level
 
-        // reset timer
+        // reset the currentToysInScene for later use (to destroy at end of level)
+        currentToysInScene = new List<GameObject>();
+        int toySpawnPointIndex = 0;
+        for (int i = 0; i < currentLevelNeedsArr.Length; i++)
+        {
+            var need = currentLevelNeedsArr[i];
+            if (need.needObject)
+            {
+                var newToy = Instantiate(need.needPrefab, toysSpawnPoints[toySpawnPointIndex++].position, Quaternion.identity, toysParentTransform);
+                currentToysInScene.Add(newToy);
 
-        // reset progress bar and configure it by the maximum number of needs in level
+                yield return new WaitForSeconds(.01f); // to be sure not to make a condition race with the dissolver of the object
+
+                // Fade in toy
+                newToy.GetComponent<PickableToy>().FadeObject(false, FadeInSpeedInStartOfLevel); // Reverse dissolving the toy
+
+                // Delay between toy spawning
+                yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel);
+
+                // play sfx
+                SoundyManager.Play(spawnToySound);
+            }
+        }
+        #endregion
+
+        ResetHUD(levelToLoad);
 
         // Enable player controller
+        ToggleGameHUDUpdateAndPlayerController(true);
     }
 
+    private void ResetHUD(LevelConfig levelToLoad)
+    {
+        // reset timer
+        timerProgressor.ResetValueTo(ResetValue.ToMaxValue);
+        currentLevelTimer = levelTimeLengthSeconds;
+
+        // reset progress bar and configure it by the maximum number of needs in level
+        currentLevelFulfilledNeeds = 0;
+        needsFulfilledProgressor.SetMax(levelToLoad.maximumNeedsToComplete);
+        needsFulfilledProgressor.SetMin(0);
+        needsFulfilledProgressor.ResetValueTo(ResetValue.ToMinValue);
+
+        // reset the stars color
+        numberOfStarsTurnedOn = 0;
+        firstStar.color = emptyStarSettings.color;
+        firstStarLine.color = emptyStarSettings.color;
+        secondStar.color = emptyStarSettings.color;
+        secondStarLine.color = emptyStarSettings.color;
+        thirdStar.color = emptyStarSettings.color;
+        thirdStarLine.color = emptyStarSettings.color;
+    }
+
+    private void ToggleGameHUDUpdateAndPlayerController(bool isPlayerCanControl)
+    {
+        isGameInPlayState = isPlayerCanControl;
+        PlayerManager.instance.isPlayerAbleToControl = isPlayerCanControl;
+    }
+
+    /// <summary>
+    /// To be called by the player when a need is fulfilled / failed (took too long)
+    /// </summary>
+    /// <param name="isSucceeded"></param>
+    public void UpdateFulfilledNeedsProgress(bool isSucceeded)
+    {
+        if (isSucceeded)
+        {
+            currentLevelFulfilledNeeds++;
+        }
+        else
+        {
+            currentLevelFulfilledNeeds--;
+        }
+        needsFulfilledProgressor.SetValue(currentLevelFulfilledNeeds);
+
+        if (needsFulfilledProgressor.Progress >= 0.33f && numberOfStarsTurnedOn == 0)
+        {
+            numberOfStarsTurnedOn++;
+            firstStar.GetComponent<Animator>().SetTrigger("Pop");
+            SoundyManager.Play(starTurnedOnSound);
+            firstStar.color = filledStarSettings.color;
+            firstStarLine.color = filledStarSettings.color;
+        }
+
+        else if (needsFulfilledProgressor.Progress >= 0.66f && numberOfStarsTurnedOn == 1)
+        {
+            numberOfStarsTurnedOn++;
+            secondStar.GetComponent<Animator>().SetTrigger("Pop");
+            SoundyManager.Play(starTurnedOnSound);
+            secondStar.color = filledStarSettings.color;
+            secondStarLine.color = filledStarSettings.color;
+        }
+
+        else if (needsFulfilledProgressor.Value == needsFulfilledProgressor.MaxValue)
+        {
+            numberOfStarsTurnedOn++;
+            thirdStar.GetComponent<Animator>().SetTrigger("Pop");
+            SoundyManager.Play(starTurnedOnSound);
+            thirdStar.color = filledStarSettings.color;
+            thirdStarLine.color = filledStarSettings.color;
+
+
+            // level finished
+            // todo VFX
+            // go to next level sequence
+        }
+    }
+
+    /// <summary>
+    /// To be called by the client
+    /// </summary>
+    /// <returns></returns>
     public Need[] GetCurrentLevelNeddsArr()
     {
         return currentLevelNeedsArr;
-    } // To be called by the client
+    }
 
+    public void SetGameObjectAsClientsChildren(Transform t)
+    {
+        t.parent = clientsParentTransform;
+    }
 }

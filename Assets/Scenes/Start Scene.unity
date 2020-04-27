@@ -838,7 +838,7 @@ MonoBehaviour:
   DebugMode: 0
   ProgressTargets:
   - {fileID: 693498148}
-  AnimateValue: 1
+  AnimateValue: 0
   AnimationDuration: 1.5
   AnimationEase: 22
   AnimationIgnoresUnityTimescale: 1
