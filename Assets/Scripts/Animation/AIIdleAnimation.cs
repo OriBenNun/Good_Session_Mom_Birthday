@@ -6,7 +6,7 @@ public class AIIdleAnimation : MonoBehaviour
     [SerializeField] float minTimeBetweenAnim = 3f;
     [SerializeField] float maxTimeBetweenAnim = 7f;
     //[SerializeField] string[] triggersNames;
-    [SerializeField] float randomDestinationDistance = 5f;
+    [SerializeField] float maxRandomDestinationDistance = 5f;
 
     private AnimatorManager m_AnimatorManager;
     private NavMeshAgent m_NavMeshAgent;
@@ -70,10 +70,10 @@ public class AIIdleAnimation : MonoBehaviour
 
     private void PickRandomPosAndSetDest()
     {
-        Vector3 randomDestFromAgent = (Random.insideUnitSphere * randomDestinationDistance) + transform.position;
+        Vector3 randomDestFromAgent = (Random.insideUnitSphere * maxRandomDestinationDistance) + transform.position;
         NavMeshHit hit;
         Vector3 finalPosition = Vector3.zero;
-        if (NavMesh.SamplePosition(randomDestFromAgent, out hit, randomDestinationDistance, 1))
+        if (NavMesh.SamplePosition(randomDestFromAgent, out hit, maxRandomDestinationDistance, 1))
         {
             finalPosition = hit.position;
         }

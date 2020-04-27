@@ -6,7 +6,6 @@ using UnityEngine;
 public class NeedsAISystem : MonoBehaviour , IInteractable
 {
     [SerializeField] Transform interactionPoint = null;
-    [SerializeField] List<Need> needsList = null;
 
     [SerializeField] float minTimeBetweenNeeds = 3.5f;
     [SerializeField] float maxTimeBetweenNeeds = 7f;
@@ -17,6 +16,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     [SerializeField] private Transform bigBallStartPoint = null;
     [SerializeField] private Transform smallBallStartPoint = null;
     [SerializeField] private Transform teddyStartPoint = null;
+
+    private List<Need> needsList;
 
     private NeedsIndicator needsIndicator;
 
@@ -53,10 +54,20 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         needsIndicator = GetComponent<NeedsIndicator>();
 
         usedNeeds = new List<Need>();
+        SetNeedsListFromArray(GameManager.instance.GetCurrentLevelNeddsArr()); // asking the game manager for the current level needs
         if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
 
         StartCoroutine("changeNeedSequence");
 
+    }
+
+    public void SetNeedsListFromArray(Need[] needsArray)
+    {
+        needsList = new List<Need>();
+        for (int i = 0; i < needsArray.Length; i++)
+        {
+            needsList.Add(needsArray[i]);
+        }
     }
 
     private void PickRandomNeed()
@@ -557,17 +568,17 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         dissolver.OnFinishedDissolve -= OnFinishedDissolveEvent;
     }
 
-    public void FadeObject(bool shouldFade, float speed = 1)
+    public void FadeObject(bool shouldDissolve, float speed = 1)
     {
         if (dissolver == null) { Debug.LogError("Hey! missing a dissolver on " + name); return; }
 
-        if (shouldFade && dissolver.GetIsVisible())
+        if (shouldDissolve && dissolver.GetIsVisible())
         {
             dissolver.StartDissolve(speed);
             dissolver.OnFinishedDissolve += OnFinishedDissolveEvent;
         }
 
-        else if (!shouldFade && !dissolver.GetIsVisible())
+        else if (!shouldDissolve && !dissolver.GetIsVisible())
         {
             dissolver.StartReverseDissolve(speed);
         }

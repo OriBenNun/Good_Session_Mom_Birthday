@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        DoubleBackExitApp();
+        //DoubleBackExitApp();
     }
 
     private void DoubleBackExitApp()

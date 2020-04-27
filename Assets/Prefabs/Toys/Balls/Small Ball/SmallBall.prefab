@@ -96,6 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mNeedsType: 2
   mHoldingObjectType: 1
+  applyForceWhenDropped: 3
 --- !u!135 &4364626179964865518
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -121,8 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf14964c959b325408b4578041f6569e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bigBallStartPoint: {fileID: 0}
-  smallBallStartPoint: {fileID: 0}
+  isGotBlendTrees: 0
+  blendSmoothFactor: 7
 --- !u!1001 &7053383145551024454
 PrefabInstance:
   m_ObjectHideFlags: 0

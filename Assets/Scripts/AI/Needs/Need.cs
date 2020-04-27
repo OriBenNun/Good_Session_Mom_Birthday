@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 [CreateAssetMenu(fileName = "New Need", menuName = "Needs System")]
 public class Need : ScriptableObject
 {
@@ -9,6 +10,7 @@ public class Need : ScriptableObject
     [SerializeField] public string startAnimationTrigger = null;
     [SerializeField] public string finishAnimationTrigger = null;
     [SerializeField] public PopUpObject popUpObject = null;
+    [SerializeField] public GameObject needPrefab = null;
 
 /*    public IInteractable GetObjectInteractable()
     {
@@ -29,6 +31,7 @@ public class Need : ScriptableObject
         return needsType;
     }
 }
+
 
 public enum NeedsType
 {

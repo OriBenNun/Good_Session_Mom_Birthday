@@ -21,6 +21,7 @@ public class DissolveMaterialCreatorController : MonoBehaviour
 
     public event Action OnFinishedDissolve;
 
+    [SerializeField] private bool isStartingTransparent = true;
 
     // create the dissolve material,
     // stores the original material and changing to the dissolve material
@@ -67,6 +68,15 @@ public class DissolveMaterialCreatorController : MonoBehaviour
         }
 
         GetComponent<Renderer>().materials = dissolveMats;
+
+        if (isStartingTransparent)
+        {
+            for (int i = 0; i < dissolveMats.Length; i++)
+            {
+                dissolveMats[i].SetFloat("alphaClipThreshold", 1);
+                isVisible = false;
+            }
+        }
     }
 
     private void LateUpdate()

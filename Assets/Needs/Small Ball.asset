@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   needsType: 2
   needObject: 1
-  interactablePrefab: {fileID: 8548267514860176280, guid: 5d96992025aca7d48b6e035dab9baa78,
-    type: 3}
   startAnimationTrigger: start_PlaySmallBall
   finishAnimationTrigger: finish_PlaySmallBall
   popUpObject: {fileID: 4353736223233785177, guid: 113bfdf68315e5a4fb5bb6b0113610a3,
+    type: 3}
+  needPrefab: {fileID: 8548267514860176280, guid: 5d96992025aca7d48b6e035dab9baa78,
     type: 3}

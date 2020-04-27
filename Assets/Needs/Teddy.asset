@@ -18,3 +18,5 @@ MonoBehaviour:
   finishAnimationTrigger: finish_PlayTeddy
   popUpObject: {fileID: 3415631511964802788, guid: d5bc996ed479e134a8acf84f40e5c7af,
     type: 3}
+  needPrefab: {fileID: 6038608919508916909, guid: 90bb9f244f7f92348990b2f4b2b6f580,
+    type: 3}
