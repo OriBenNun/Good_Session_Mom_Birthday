@@ -50,12 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionPoint: {fileID: 7634592082467449783}
-  needsList:
-  - {fileID: 11400000, guid: 6d705659011e60148874631d952a6eb4, type: 2}
-  - {fileID: 11400000, guid: 3eee81694fad6514995e2d339a8daac7, type: 2}
-  - {fileID: 11400000, guid: acbdead4274e16f4d9ef680b7f23f26d, type: 2}
-  - {fileID: 11400000, guid: 3680319d8171e7c438b1fedf856ffc5b, type: 2}
-  - {fileID: 11400000, guid: 5809348dfb8c5db4bb2bc5826db68229, type: 2}
+  maxTimeToFulfillNeed: 30
   minTimeBetweenNeeds: 2
   maxTimeBetweenNeeds: 13
   minFulfilledAnimationTime: 5

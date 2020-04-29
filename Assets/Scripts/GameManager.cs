@@ -290,10 +290,16 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            currentLevelFulfilledNeeds--;
+            if (currentLevelFulfilledNeeds > 0)
+            {
+                currentLevelFulfilledNeeds--;
+            }
         }
         needsFulfilledProgressor.SetValue(currentLevelFulfilledNeeds);
+    }
 
+    public void OnProgressorProgressChanged()
+    {
         if (needsFulfilledProgressor.Progress >= 0.33f && numberOfStarsTurnedOn == 0)
         {
             numberOfStarsTurnedOn++;

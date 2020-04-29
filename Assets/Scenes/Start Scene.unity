@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -817,7 +817,7 @@ GameObject:
   - component: {fileID: 1193576802}
   - component: {fileID: 1193576801}
   m_Layer: 0
-  m_Name: Progressor
+  m_Name: SceneLoadProgressor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -838,9 +838,9 @@ MonoBehaviour:
   DebugMode: 0
   ProgressTargets:
   - {fileID: 693498148}
-  AnimateValue: 0
-  AnimationDuration: 1.5
-  AnimationEase: 22
+  AnimateValue: 1
+  AnimationDuration: 0.5
+  AnimationEase: 1
   AnimationIgnoresUnityTimescale: 1
   OnEnableResetValue: 1
   OnDisableResetValue: 0

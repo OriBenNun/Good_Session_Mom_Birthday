@@ -10,7 +10,6 @@ public class NeedsIndicator : MonoBehaviour
 
     private GameObject currentNeedObject;
     private Canvas currentCanvas;
-    private Image currentImage;
 
     public void CreateNeedIndicator(PopUpObject popUpObject)
     {
@@ -21,9 +20,18 @@ public class NeedsIndicator : MonoBehaviour
         currentNeedObject.transform.Rotate(Vector3.right, 80, Space.Self);
     }
 
+    public void UpdatePopAnimator(float urgentBlend)
+    {
+        currentCanvas.GetComponentInChildren<Animator>().SetFloat("urgentBlend", urgentBlend);
+    }
+
+    public void TriggerExplodeAnimation()
+    {
+        currentCanvas.GetComponentInChildren<Animator>().SetTrigger("explodeTrigger");
+    }
+
     public void DestroyNeedIndication()
     {
-        // TODO vfx for that
         Destroy(currentNeedObject);
         currentNeedObject = null;
     }

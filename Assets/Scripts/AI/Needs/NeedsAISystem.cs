@@ -7,6 +7,9 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 {
     [SerializeField] Transform interactionPoint = null;
 
+    [SerializeField] float maxTimeToFulfillNeed = 15f;
+
+
     [SerializeField] float minTimeBetweenNeeds = 3.5f;
     [SerializeField] float maxTimeBetweenNeeds = 7f;
 
@@ -36,6 +39,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     private bool isHoldingPlayerHand = false;
 
+    private float inNeedTimer = 0;
+
     private void Awake()
     {
         dissolver = GetComponentInChildren<DissolveMaterialCreatorController>();
@@ -57,8 +62,42 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         SetNeedsListFromArray(GameManager.instance.GetCurrentLevelNeddsArr()); // asking the game manager for the current level needs
         if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
 
-        StartCoroutine("changeNeedSequence");
+        StartCoroutine("ChangeNeedSequence");
 
+    }
+
+    private void Update()
+    {
+        if (isInNeed)
+        {
+            inNeedTimer += Time.deltaTime;
+
+            if (inNeedTimer <= maxTimeToFulfillNeed)
+            {
+                needsIndicator.UpdatePopAnimator(inNeedTimer / maxTimeToFulfillNeed); // Sends the urgentBlend to the pop animator blend tree. this is the fraction (between 0 and 1)
+            }
+
+            else
+            {
+                StartCoroutine("FailToFulfillNeedInTime");
+            }
+        }
+    }
+
+    private IEnumerator FailToFulfillNeedInTime()
+    {
+        isInNeed = false;
+
+        needsIndicator.TriggerExplodeAnimation();
+        
+        yield return new WaitForSeconds(1.2f); // to let the animation of the explosion to finish and emiting the particles
+
+        GameManager.instance.UpdateFulfilledNeedsProgress(false); // to decrease the progress bar and play fail sound
+        needsIndicator.DestroyNeedIndication(); // destroy the current need indicator
+
+        if (isHoldingPlayerHand){ StopHoldPlayerHand(); }
+
+        StartCoroutine("ChangeNeedSequence"); // gets into cd and pick new need
     }
 
     public void SetNeedsListFromArray(Need[] needsArray)
@@ -110,6 +149,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         }
 
         isInNeed = true;
+        inNeedTimer = 0;
     }
 
     private int GenerateRandom()
@@ -410,7 +450,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         // enable nav mesh and colliders
         mAnimatorManager.ToggleNavAndKinematic(false);
 
-        StartCoroutine("changeNeedSequence");
+        StartCoroutine("ChangeNeedSequence");
     }
 
     public IEnumerator FulfilledStaticToyNeedSequence(IInteractable staticToy, Transform startAnimPos)
@@ -419,7 +459,6 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         // destroy the current need indicator
         needsIndicator.DestroyNeedIndication();
-        // Todo add Ui VFX to the destroied indicator
 
         // stops current animation
         mAnimatorManager.StopAnimator();
@@ -537,11 +576,11 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         #endregion
 
-        StartCoroutine("changeNeedSequence");
+        StartCoroutine("ChangeNeedSequence");
     } // Being called by the static toy
 
 
-    private IEnumerator changeNeedSequence()
+    private IEnumerator ChangeNeedSequence()
     {
         isInCD = true;
         yield return new WaitForSeconds(RandomTimeBetweenNeeds());
