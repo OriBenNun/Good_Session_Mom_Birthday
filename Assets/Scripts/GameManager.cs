@@ -72,13 +72,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        timerProgressor.SetMax(levelTimeLengthSeconds);
+        timerProgressor.SetMin(0);
+
         if (currentLevelLoadedNumber == 0)
         {
             StartCoroutine("LoadLevelFromConfig", firstLevelNumber);
         }
-
-        timerProgressor.SetMax(levelTimeLengthSeconds);
-        timerProgressor.SetMin(0);
     }
 
     private void Update()
