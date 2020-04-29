@@ -7,7 +7,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FinishedPopup_2Star
+  m_Name: FinishedPopup_NoStars
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -20,7 +20,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: db8ddb5fc43b368499c2fd3d97c38cc1, type: 2}
+  m_Motion: {fileID: 7400000, guid: db1dd12e62ada024da88d52d41b41ff2, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -84,7 +84,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FinishedLevelPopup_2Stars
+  m_Name: FinishedLevelPopup_no stars
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Go

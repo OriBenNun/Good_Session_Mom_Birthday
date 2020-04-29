@@ -30,6 +30,11 @@ public class NeedsIndicator : MonoBehaviour
         currentCanvas.GetComponentInChildren<Animator>().SetTrigger("explodeTrigger");
     }
 
+    public void TriggerSucceedAnimation()
+    {
+        currentCanvas.GetComponentInChildren<Animator>().SetTrigger("winTrigger");
+    }
+
     public void DestroyNeedIndication()
     {
         Destroy(currentNeedObject);

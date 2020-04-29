@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class ParticleInstatiateFromEvent : MonoBehaviour
 {
-    [SerializeField] ParticleSystem particle = null;
-    [SerializeField] float timeBeforeDestroy = 5;
-    public void EmitParticles()
+    [SerializeField] ParticleSystem explodeParticles = null;
+    [SerializeField] ParticleSystem winParticle = null;
+    public void EmitExplodeParticles()
     {
-        Debug.Log("Emitiing particles");
-        ParticleSystem particleSystem = Instantiate(particle, transform.position, Quaternion.identity);
-        Destroy(particleSystem, timeBeforeDestroy);
+        Instantiate(explodeParticles, transform.position, Quaternion.identity);
+    }
+
+    public void EmitWinParticles()
+    {
+        Instantiate(winParticle, transform.position, Quaternion.identity);
     }
 }

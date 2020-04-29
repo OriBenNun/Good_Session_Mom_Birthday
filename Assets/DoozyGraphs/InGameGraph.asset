@@ -17,13 +17,6 @@ MonoBehaviour:
   m_inputSockets:
   - m_connectionMode: 1
     m_connections:
-    - m_inputConnectionPoint: {x: -2, y: 4}
-      m_outputConnectionPoint: {x: 202, y: 4}
-      m_id: 9a001ddc-33fa-407a-b4f9-d10e857bb7f0
-      m_inputNodeId: 2fa1f8f0-cb69-4c7f-9b69-e1a048b7ba15
-      m_inputSocketId: c7a0e6f2-f651-45fb-9e6f-e0f6e6c33700
-      m_outputNodeId: 7c2f81d4-0ebe-40fa-8d61-e0477f644a93
-      m_outputSocketId: 8af6b59e-edde-43e3-b3ae-4a8159875a65
     - m_inputConnectionPoint: {x: 202, y: 4}
       m_outputConnectionPoint: {x: 202, y: 4}
       m_id: 097c834e-04d8-45f7-a9d3-ae6cc0527734
@@ -431,7 +424,7 @@ MonoBehaviour:
   m_version: 1
   m_description: 
   m_id: 6d97b5d6-d253-4877-a59a-3f19b5202694
-  m_lastModified: 132326178689179140
+  m_lastModified: 132326382747794288
 --- !u!114 &3680972901201339088
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -475,14 +468,7 @@ MonoBehaviour:
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   m_outputSockets:
   - m_connectionMode: 0
-    m_connections:
-    - m_inputConnectionPoint: {x: -2, y: 4}
-      m_outputConnectionPoint: {x: 202, y: 4}
-      m_id: 9a001ddc-33fa-407a-b4f9-d10e857bb7f0
-      m_inputNodeId: 2fa1f8f0-cb69-4c7f-9b69-e1a048b7ba15
-      m_inputSocketId: c7a0e6f2-f651-45fb-9e6f-e0f6e6c33700
-      m_outputNodeId: 7c2f81d4-0ebe-40fa-8d61-e0477f644a93
-      m_outputSocketId: 8af6b59e-edde-43e3-b3ae-4a8159875a65
+    m_connections: []
     m_connectionPoints:
     - {x: -2, y: 4}
     - {x: 202, y: 4}

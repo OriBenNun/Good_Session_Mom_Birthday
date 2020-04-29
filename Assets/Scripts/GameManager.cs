@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Doozy.Engine.Soundy;
 using Doozy.Engine.Progress;
+using Doozy.Engine.UI;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour
     private GameObject[] currentClientsInScene;
     private List<GameObject> currentToysInScene;
     private Need[] currentLevelNeedsArr; // for the client to ask once it spawned
+    private UIPopup finishedLevelPopup;
 
     private float currentLevelTimer;
     private float currentLevelFulfilledNeeds;
@@ -59,6 +61,11 @@ public class GameManager : MonoBehaviour
 
 
     private const float destroyDelay = 2f;
+
+    private const string finishedPopup1Star = "FinishedLevelPopup_1Star";
+    private const string finishedPopup2Stars = "FinishedLevelPopup_2Stars";
+    private const string finishedPopup3Stars = "FinishedLevelPopup_3Stars";
+    private const string finishedPopupNoStars = "FinishedLevelPopup_NoStars";
 
     private void Awake()
     {
@@ -88,17 +95,17 @@ public class GameManager : MonoBehaviour
             currentLevelTimer -= Time.deltaTime;
 
             timerProgressor.SetValue(currentLevelTimer); // updated the HUD timer Doozy progressor value
+
+            if (currentLevelTimer <= 0)
+            {
+                LevelFinished();
+            }
         }
 
         // REMOVE. FOR DEBUGGING
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            StartCoroutine("DestroyCurrentLevel");
-        }
-
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine("LoadLevelFromConfig", ++currentLevelLoadedNumber);
+            LevelFinished();
         }
     }
     private IEnumerator DestroyCurrentLevel()
@@ -168,7 +175,7 @@ public class GameManager : MonoBehaviour
         {
             levelToLoad = levelsConfigs[0];
             currentLevelLoadedNumber = 1;
-            Debug.LogError("Something is wrong with level loader on level number " + levelNumberToLoad + ". loading first level for now");
+            Debug.LogError("Something is wrong with level loader on level number " + levelNumberToLoad + ". Probably u ran out of levels loading first level for now");
             Debug.Break();
         }
 
@@ -246,6 +253,10 @@ public class GameManager : MonoBehaviour
 
         ResetHUD(levelToLoad);
 
+        LevelNumberAnnouncerPopup(); // The title popup that shows the number of the level
+
+        PlayerManager.instance.FadeObject(false); // To handle a niche bug where the level ends exactly when the player is fade out
+
         // Enable player controller
         ToggleGameHUDUpdateAndPlayerController(true);
     }
@@ -300,7 +311,11 @@ public class GameManager : MonoBehaviour
 
     public void OnProgressorProgressChanged()
     {
-        if (needsFulfilledProgressor.Progress >= 0.33f && numberOfStarsTurnedOn == 0)
+        if (!isGameInPlayState) { return; }
+
+        // First Star
+
+        if (needsFulfilledProgressor.Progress >= 0.33f && numberOfStarsTurnedOn == 0) 
         {
             numberOfStarsTurnedOn++;
             firstStar.GetComponent<Animator>().SetTrigger("Pop");
@@ -308,6 +323,15 @@ public class GameManager : MonoBehaviour
             firstStar.color = filledStarSettings.color;
             firstStarLine.color = filledStarSettings.color;
         }
+        else if (needsFulfilledProgressor.Progress < 0.3f && numberOfStarsTurnedOn == 1)
+        {
+            numberOfStarsTurnedOn--;
+            //SoundyManager.Play(starTurnedOnSound);
+            firstStar.color = emptyStarSettings.color;
+            firstStarLine.color = emptyStarSettings.color;
+        }
+
+        //Second Star
 
         else if (needsFulfilledProgressor.Progress >= 0.66f && numberOfStarsTurnedOn == 1)
         {
@@ -316,6 +340,13 @@ public class GameManager : MonoBehaviour
             SoundyManager.Play(starTurnedOnSound);
             secondStar.color = filledStarSettings.color;
             secondStarLine.color = filledStarSettings.color;
+        }
+        else if (needsFulfilledProgressor.Progress < 0.63f && numberOfStarsTurnedOn == 2)
+        {
+            numberOfStarsTurnedOn--;
+            //SoundyManager.Play(starTurnedOnSound);
+            secondStar.color = emptyStarSettings.color;
+            secondStarLine.color = emptyStarSettings.color;
         }
 
         else if (needsFulfilledProgressor.Value == needsFulfilledProgressor.MaxValue)
@@ -326,11 +357,59 @@ public class GameManager : MonoBehaviour
             thirdStar.color = filledStarSettings.color;
             thirdStarLine.color = filledStarSettings.color;
 
-
-            // level finished
-            // todo VFX
-            // go to next level sequence
+            LevelFinished();
         }
+    }
+
+    private void LevelFinished()
+    {
+        ToggleGameHUDUpdateAndPlayerController(false);
+        StartCoroutine("DestroyCurrentLevel");
+
+        string messageText = "בשלב " + currentLevelLoadedNumber + " קיבלת:";
+
+        switch (numberOfStarsTurnedOn)
+        {
+            case 1:
+                finishedLevelPopup = UIPopup.GetPopup(finishedPopup1Star);
+                break;
+            case 2:
+                finishedLevelPopup = UIPopup.GetPopup(finishedPopup2Stars);
+                break;
+            case 3:
+                finishedLevelPopup = UIPopup.GetPopup(finishedPopup3Stars);
+                break;
+
+            default:
+                finishedLevelPopup = UIPopup.GetPopup(finishedPopupNoStars);
+                messageText = "בשלב " + currentLevelLoadedNumber + " לא קיבלת כוכבים, אבל אפשר לנסות שוב";
+                break;
+        }
+
+        finishedLevelPopup.Data.SetLabelsTexts(messageText);
+        finishedLevelPopup.Data.SetButtonsCallbacks(OnTryAgainClicked, OnNextLevelClicked);
+
+        finishedLevelPopup.Show();
+    }
+
+    private void OnTryAgainClicked()
+    {
+        StartCoroutine("LoadLevelFromConfig", currentLevelLoadedNumber);
+        finishedLevelPopup.Hide();
+    }
+
+    private void OnNextLevelClicked()
+    {
+        StartCoroutine("LoadLevelFromConfig", ++currentLevelLoadedNumber);
+        finishedLevelPopup.Hide();
+    }
+
+    private void LevelNumberAnnouncerPopup()
+    {
+        UIPopup popup = UIPopup.GetPopup("LevelAnnouncerPopup");
+        string text = "שלב " + currentLevelLoadedNumber;
+        popup.Data.SetLabelsTexts(text);
+        popup.Show();
     }
 
     /// <summary>

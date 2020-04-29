@@ -365,12 +365,17 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     {
         isInNeed = false;
 
-        // destroy the current need indicator
-        needsIndicator.DestroyNeedIndication();
-        // Todo add Ui VFX to the destroied indicator
+        // Play fulfilled indicator animation
+        needsIndicator.TriggerSucceedAnimation();
 
         // stops current animation
         mAnimatorManager.StopAnimator();
+
+        // wait for animation to end
+        yield return new WaitForSeconds(.6f);
+
+        // destroy the current need indicator
+        needsIndicator.DestroyNeedIndication();
 
         // disable nav mesh and colliders
         mAnimatorManager.ToggleNavAndKinematic(true);
@@ -457,11 +462,17 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     {
         isInNeed = false;
 
-        // destroy the current need indicator
-        needsIndicator.DestroyNeedIndication();
+        // Play fulfilled indicator animation
+        needsIndicator.TriggerSucceedAnimation();
 
         // stops current animation
         mAnimatorManager.StopAnimator();
+
+        // wait for animation to end
+        yield return new WaitForSeconds(.6f);
+
+        // destroy the current need indicator
+        needsIndicator.DestroyNeedIndication();
 
         PlayerManager.instance.SuccesfulClientNeedFulfilled(); // Todo add effects to player and add to score and shit
 
