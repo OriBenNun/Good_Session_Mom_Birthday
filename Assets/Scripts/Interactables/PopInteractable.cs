@@ -13,7 +13,6 @@ public class PopInteractable : MonoBehaviour , IInteractable
 
     public void OnInteraction()
     {
-        // TODO add help label with the object name / zoon in?
         m_Client.OnInteraction(); // calls on the Client, like the player pressed him
     }
 

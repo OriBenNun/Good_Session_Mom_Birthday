@@ -143,7 +143,7 @@ public class ClickToInteract : MonoBehaviour
                 {
                     if (PlayerManager.instance.isHoldingClientHand)
                     {
-                        // Todo fail SFX
+                        GameManager.instance.PlayClickFailSound();
                         continue;
                     }
                     else
@@ -173,54 +173,6 @@ public class ClickToInteract : MonoBehaviour
         }
     }
 
-    /*    void InteractWithTapPosition()
-        {
-            if (!PlayerManager.instance.isPlayerAbleToControl) { return; }
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
-            if (hits.Length > 0)
-            {
-                for (int i = 0; i <= hits.Length - 1; i++)
-                {
-                    //var interactable = hits[i].transform.GetComponent<IInteractable>();
-                    var interactable = hits[i].transform.GetComponentInChildren<IInteractable>();
-                    if (interactable != null)
-                    {
-                        if (interactable.GetInteractType() == InteractType.PickableToy)
-                        {
-                            if (PlayerManager.instance.isHoldingClientHand)
-                            {
-                                // Todo fail SFX
-                                continue;
-                            }
-                            else
-                            {
-                                InteractWithPickableToy(interactable);
-                                return;
-                            }
-                        }
-
-                        else if (interactable.GetInteractType() == InteractType.StaticToy)
-                        {
-                            InteractWithStaticToy(interactable);
-                            return;
-                        }
-
-                        else if (interactable.GetInteractType() == InteractType.Client)
-                        {
-                            InteractWithClient(interactable);
-                            return;
-                        }
-
-                        else if (interactable.GetInteractType() == InteractType.Move)
-                        {
-                            InteractWithFloor(hits, i);
-                        }
-                    }
-                }
-            }
-        }*/
-
     private void InteractWithStaticToy(IInteractable interactable)
     {
         currentInteractingWith = interactable;
@@ -239,7 +191,7 @@ public class ClickToInteract : MonoBehaviour
     {
         if (!interactable.GetIsCurrentlyInteractable())
         {
-            // Todo fail SFX
+            GameManager.instance.PlayClickFailSound();
             return;
         }
 
@@ -252,7 +204,7 @@ public class ClickToInteract : MonoBehaviour
 
             else
             {
-                // Todo fail SFX
+                GameManager.instance.PlayClickFailSound();
             }
         }
 
@@ -276,7 +228,7 @@ public class ClickToInteract : MonoBehaviour
     {
         if (!interactable.GetIsCurrentlyInteractable())
         {
-            // Todo fail SFX
+            GameManager.instance.PlayClickFailSound();
             return;
         }
 

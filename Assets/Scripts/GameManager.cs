@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] SoundyData clickFailSound;
     [SerializeField] SoundyData needFulfilledSound;
     [SerializeField] SoundyData needFailedSound;
+    [SerializeField] SoundyData newNeedSound;
 
     [Header("HUD")]
     [SerializeField] Progressor timerProgressor;
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Image emptyStarSettings;
 
     public event Action onLevelFinished;
+    public event Action onLevelLoaded;
 
 
     private int currentLevelLoadedNumber = 0;
@@ -126,7 +128,7 @@ public class GameManager : MonoBehaviour
 
             // Hide need indicator
             currentClientsInScene[i].GetComponent<NeedsIndicator>().HideIndicator(true);
-            // todo add VFX
+            
 
             // Delay between client spawning
             yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel / 2);
@@ -263,6 +265,7 @@ public class GameManager : MonoBehaviour
 
         PlayerManager.instance.FadeObject(false); // To handle a niche bug where the level ends exactly when the player is fade out
 
+        onLevelLoaded?.Invoke();
         // Enable player controller
         ToggleGameHUDUpdateAndPlayerController(true);
     }
@@ -440,5 +443,9 @@ public class GameManager : MonoBehaviour
     public void PlayClickFailSound()
     {
         SoundyManager.Play(clickFailSound);
+    }
+    public void PlayNewNeedSound()
+    {
+        SoundyManager.Play(newNeedSound);
     }
 }

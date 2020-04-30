@@ -50,21 +50,15 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     private void OnDestroy()
     {
         GameManager.instance.onLevelFinished -= OnLevelFinished;
+        GameManager.instance.onLevelLoaded -= OnLevelLoaded;
         PlayerManager.instance.OnPlayerFinishedGiveAnimation -= PlayerFinishedGiveItemAnimation;
     }
 
     private void Start()
     {
+        GameManager.instance.onLevelLoaded += OnLevelLoaded;
         GameManager.instance.onLevelFinished += OnLevelFinished;
         PlayerManager.instance.OnPlayerFinishedGiveAnimation += PlayerFinishedGiveItemAnimation; // singing here instead of OnEnable because of condition race, player is not ready on OnEnable.
-
-        needsIndicator = GetComponent<NeedsIndicator>();
-
-        usedNeeds = new List<Need>();
-        SetNeedsListFromArray(GameManager.instance.GetCurrentLevelNeddsArr()); // asking the game manager for the current level needs
-        if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
-
-        StartCoroutine("ChangeNeedSequence");
 
     }
 
@@ -84,6 +78,16 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
                 StartCoroutine("FailToFulfillNeedInTime");
             }
         }
+    }
+
+    private void OnLevelLoaded()
+    {
+        needsIndicator = GetComponent<NeedsIndicator>();
+
+        usedNeeds = new List<Need>();
+        SetNeedsListFromArray(GameManager.instance.GetCurrentLevelNeddsArr()); // asking the game manager for the current level needs
+        if (needsList.Count < 1) { Debug.LogError("this client " + name + " have no needs!"); return; }
+        StartCoroutine("ChangeNeedSequence");
     }
 
     private void OnLevelFinished()
@@ -605,6 +609,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         PickRandomNeed();
         needsIndicator.CreateNeedIndicator(currentNeed.popUpObject);
+        GameManager.instance.PlayNewNeedSound();
         isInCD = false;
     }
 

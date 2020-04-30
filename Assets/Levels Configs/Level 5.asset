@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelNumber: 5
   numberOfClients: 5
-  maximumNeedsToComplete: 12
+  maximumNeedsToComplete: 10
   needsTypeInLevel:
   - {fileID: 11400000, guid: 3680319d8171e7c438b1fedf856ffc5b, type: 2}
   - {fileID: 11400000, guid: acbdead4274e16f4d9ef680b7f23f26d, type: 2}
