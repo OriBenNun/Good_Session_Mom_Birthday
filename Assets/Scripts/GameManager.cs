@@ -5,6 +5,7 @@ using Doozy.Engine.Soundy;
 using Doozy.Engine.Progress;
 using Doozy.Engine.UI;
 using UnityEngine.UI;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,6 +33,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] SoundyData spawnClientSound;
     [SerializeField] SoundyData spawnToySound;
     [SerializeField] SoundyData starTurnedOnSound;
+    [SerializeField] SoundyData clickFailSound;
+    [SerializeField] SoundyData needFulfilledSound;
+    [SerializeField] SoundyData needFailedSound;
 
     [Header("HUD")]
     [SerializeField] Progressor timerProgressor;
@@ -45,6 +49,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] Image filledStarSettings;
     [SerializeField] Image emptyStarSettings;
 
+    public event Action onLevelFinished;
+
 
     private int currentLevelLoadedNumber = 0;
     private GameObject[] currentClientsInScene;
@@ -57,7 +63,7 @@ public class GameManager : MonoBehaviour
 
     private int numberOfStarsTurnedOn;
 
-    private bool isGameInPlayState = false;
+    public bool isGameInPlayState = false;
 
 
     private const float destroyDelay = 2f;
@@ -102,7 +108,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // REMOVE. FOR DEBUGGING
+        // TODO REMOVE. FOR DEBUGGING
         if (Input.GetKeyDown(KeyCode.Return))
         {
             LevelFinished();
@@ -126,7 +132,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel / 2);
 
             // Play sfx
-            SoundyManager.Play(spawnClientSound);
+            //SoundyManager.Play(spawnClientSound);
 
             // Destroy Client Gameobject
             Destroy(currentClientsInScene[i], destroyDelay);
@@ -142,7 +148,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(timeBetweenSpawnInStartOfLevel / 2);
 
             // Play sfx
-            SoundyManager.Play(spawnToySound);
+            //SoundyManager.Play(spawnToySound);
 
             // Destroy Client Gameobject
             Destroy(currentToysInScene[i], destroyDelay);
@@ -197,7 +203,7 @@ public class GameManager : MonoBehaviour
         // Handles the logic of the randomness
         for (int i = 0; i < levelToLoad.numberOfClients; i++)
         {
-            int randomClientIndex = Random.Range(0, availableClientsIndexes.Count);
+            int randomClientIndex = UnityEngine.Random.Range(0, availableClientsIndexes.Count);
 
             availableClientsIndexes.RemoveAt(randomClientIndex);
 
@@ -297,10 +303,12 @@ public class GameManager : MonoBehaviour
     {
         if (isSucceeded)
         {
+            SoundyManager.Play(needFulfilledSound);
             currentLevelFulfilledNeeds++;
         }
         else
         {
+            SoundyManager.Play(needFailedSound);
             if (currentLevelFulfilledNeeds > 0)
             {
                 currentLevelFulfilledNeeds--;
@@ -353,7 +361,7 @@ public class GameManager : MonoBehaviour
         {
             numberOfStarsTurnedOn++;
             thirdStar.GetComponent<Animator>().SetTrigger("Pop");
-            SoundyManager.Play(starTurnedOnSound);
+            //SoundyManager.Play(starTurnedOnSound);
             thirdStar.color = filledStarSettings.color;
             thirdStarLine.color = filledStarSettings.color;
 
@@ -364,6 +372,9 @@ public class GameManager : MonoBehaviour
     private void LevelFinished()
     {
         ToggleGameHUDUpdateAndPlayerController(false);
+
+        onLevelFinished?.Invoke();
+
         StartCoroutine("DestroyCurrentLevel");
 
         string messageText = "בשלב " + currentLevelLoadedNumber + " קיבלת:";
@@ -424,5 +435,10 @@ public class GameManager : MonoBehaviour
     public void SetGameObjectAsClientsChildren(Transform t)
     {
         t.parent = clientsParentTransform;
+    }
+
+    public void PlayClickFailSound()
+    {
+        SoundyManager.Play(clickFailSound);
     }
 }

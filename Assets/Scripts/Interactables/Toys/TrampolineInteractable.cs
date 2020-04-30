@@ -18,6 +18,15 @@ public class TrampolineInteractable : MonoBehaviour , IInteractable
 
     private const string finishTriggerString = "finish_ChildJumping";
 
+    private void Start()
+    {
+        GameManager.instance.onLevelFinished += OnLevelFinished;
+    }
+    private void OnDisable()
+    {
+        GameManager.instance.onLevelFinished -= OnLevelFinished;
+    }
+
     private void Awake()
     {
         mAnimator = GetComponent<AnimatorManager>();
@@ -91,6 +100,12 @@ public class TrampolineInteractable : MonoBehaviour , IInteractable
     public bool GetIsCurrentlyInteractable()
     {
         throw new System.NotImplementedException();
+    }
+
+    private void OnLevelFinished()
+    {
+        isInClientUse = false;
+        mAnimator.TriggerAnimationNoSync(finishTriggerString);
     }
 }
 

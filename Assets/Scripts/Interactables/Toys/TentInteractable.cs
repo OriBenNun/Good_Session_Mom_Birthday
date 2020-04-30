@@ -11,6 +11,14 @@ public class TentInteractable : MonoBehaviour , IInteractable
 
     private bool isInClientUse = false;
 
+    private void Start()
+    {
+        GameManager.instance.onLevelFinished += OnLevelFinished;
+    }
+    private void OnDisable()
+    {
+        GameManager.instance.onLevelFinished -= OnLevelFinished;
+    }
     public InteractType GetInteractType()
     {
         return InteractType.StaticToy;
@@ -77,6 +85,11 @@ public class TentInteractable : MonoBehaviour , IInteractable
     public bool GetIsCurrentlyInteractable()
     {
         throw new System.NotImplementedException();
+    }
+
+    private void OnLevelFinished()
+    {
+        isInClientUse = false;
     }
 }
 

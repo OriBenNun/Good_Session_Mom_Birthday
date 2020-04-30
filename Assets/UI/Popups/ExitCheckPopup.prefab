@@ -699,7 +699,7 @@ MonoBehaviour:
   HideOnAnyButton: 0
   HideOnBackButton: 1
   HideOnClickAnywhere: 0
-  HideOnClickContainer: 0
+  HideOnClickContainer: 1
   HideOnClickOverlay: 1
   HideProgressor: {fileID: 0}
   OnInverseVisibilityChanged:

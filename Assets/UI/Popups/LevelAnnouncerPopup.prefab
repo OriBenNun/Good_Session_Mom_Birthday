@@ -375,8 +375,8 @@ MonoBehaviour:
       - ShowHUD
       SoundData:
         SoundSource: 0
-        DatabaseName: General
-        SoundName: No Sound
+        DatabaseName: Example Slides
+        SoundName: Interface Swipe 3
         AudioClip: {fileID: 0}
         OutputAudioMixerGroup: {fileID: 0}
     PresetCategory: Basic

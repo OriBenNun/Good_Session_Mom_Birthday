@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class ClickToInteract : MonoBehaviour
@@ -33,6 +34,9 @@ public class ClickToInteract : MonoBehaviour
     private bool onWayToInteractDest = false;
     private bool isRotatingToInteract = false;
 
+    private float tapWaitTime = .1f; // Its about time to fix the zoom glitch
+    private bool tapTimerOn = false; // Its about time to fix the zoom glitch
+
     private void Awake()
     {
         mNavMeshAgent = GetComponent<NavMeshAgent>();
@@ -42,19 +46,23 @@ public class ClickToInteract : MonoBehaviour
 
     void Update()
     {
+        if (!GameManager.instance.isGameInPlayState) { return; }
+
         if (Input.touchCount == 2)
         {
+            tapTimerOn = false;
             PinchZoom();
         }  // checking for pinch to zoom first
 
         else if (Input.touchCount > 2)
         {
+            tapTimerOn = false;
             return;
         } // TODO some visual explaination, no more than 2 fingers commands
 
         else if (Input.GetMouseButtonDown(0))
         {
-            InteractWithTapPosition();
+            StartCoroutine("TapZoomGlitchFixer");
         }  // the main tap handler
 
         if (isRotatingToInteract)
@@ -102,53 +110,116 @@ public class ClickToInteract : MonoBehaviour
 
     }
 
-    void InteractWithTapPosition()
+    private IEnumerator TapZoomGlitchFixer()
     {
-        if (!PlayerManager.instance.isPlayerAbleToControl) { return; }
+        if (!PlayerManager.instance.isPlayerAbleToControl) { yield break; }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
-        if (hits.Length > 0)
+        if (hits.Length == 0)
         {
-            for (int i = 0; i <= hits.Length - 1; i++)
+            yield break;
+        }
+        else 
+        {
+            tapTimerOn = true;
+            yield return new WaitForSeconds(tapWaitTime);
+        }
+
+        if (tapTimerOn)
+        {
+            InteractWithTap(hits);
+        }
+    }
+
+    private void InteractWithTap(RaycastHit[] hits)
+    {
+        for (int i = 0; i <= hits.Length - 1; i++)
+        {
+            //var interactable = hits[i].transform.GetComponent<IInteractable>();
+            var interactable = hits[i].transform.GetComponentInChildren<IInteractable>();
+            if (interactable != null)
             {
-                //var interactable = hits[i].transform.GetComponent<IInteractable>();
-                var interactable = hits[i].transform.GetComponentInChildren<IInteractable>();
-                if (interactable != null)
+                if (interactable.GetInteractType() == InteractType.PickableToy)
                 {
-                    if (interactable.GetInteractType() == InteractType.PickableToy)
+                    if (PlayerManager.instance.isHoldingClientHand)
                     {
-                        if (PlayerManager.instance.isHoldingClientHand)
-                        {
-                            // Todo fail SFX
-                            continue;
-                        }
-                        else
-                        {
-                            InteractWithPickableToy(interactable);
-                            return;
-                        }
+                        // Todo fail SFX
+                        continue;
                     }
-
-                    else if (interactable.GetInteractType() == InteractType.StaticToy)
+                    else
                     {
-                        InteractWithStaticToy(interactable);
+                        InteractWithPickableToy(interactable);
                         return;
                     }
+                }
 
-                    else if (interactable.GetInteractType() == InteractType.Client)
-                    {
-                        InteractWithClient(interactable);
-                        return;
-                    }
+                else if (interactable.GetInteractType() == InteractType.StaticToy)
+                {
+                    InteractWithStaticToy(interactable);
+                    return;
+                }
 
-                    else if (interactable.GetInteractType() == InteractType.Move)
-                    {
-                        InteractWithFloor(hits, i);
-                    }
+                else if (interactable.GetInteractType() == InteractType.Client)
+                {
+                    InteractWithClient(interactable);
+                    return;
+                }
+
+                else if (interactable.GetInteractType() == InteractType.Move)
+                {
+                    InteractWithFloor(hits, i);
                 }
             }
         }
     }
+
+    /*    void InteractWithTapPosition()
+        {
+            if (!PlayerManager.instance.isPlayerAbleToControl) { return; }
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.SphereCastAll(ray, tapSphereCastRadius);
+            if (hits.Length > 0)
+            {
+                for (int i = 0; i <= hits.Length - 1; i++)
+                {
+                    //var interactable = hits[i].transform.GetComponent<IInteractable>();
+                    var interactable = hits[i].transform.GetComponentInChildren<IInteractable>();
+                    if (interactable != null)
+                    {
+                        if (interactable.GetInteractType() == InteractType.PickableToy)
+                        {
+                            if (PlayerManager.instance.isHoldingClientHand)
+                            {
+                                // Todo fail SFX
+                                continue;
+                            }
+                            else
+                            {
+                                InteractWithPickableToy(interactable);
+                                return;
+                            }
+                        }
+
+                        else if (interactable.GetInteractType() == InteractType.StaticToy)
+                        {
+                            InteractWithStaticToy(interactable);
+                            return;
+                        }
+
+                        else if (interactable.GetInteractType() == InteractType.Client)
+                        {
+                            InteractWithClient(interactable);
+                            return;
+                        }
+
+                        else if (interactable.GetInteractType() == InteractType.Move)
+                        {
+                            InteractWithFloor(hits, i);
+                        }
+                    }
+                }
+            }
+        }*/
 
     private void InteractWithStaticToy(IInteractable interactable)
     {

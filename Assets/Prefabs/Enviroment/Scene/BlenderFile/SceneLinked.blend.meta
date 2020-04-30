@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: CarpetTexture
+    second: {fileID: 2100000, guid: 4c4cd351ea72d224b916c1092e7c8cdf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Floor
     second: {fileID: 2100000, guid: 00b03726656f75048875c54b02a4a5e1, type: 2}
   - first:

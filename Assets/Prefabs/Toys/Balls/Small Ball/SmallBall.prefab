@@ -31,6 +31,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bc74490020a2d94e8ae6a48d54b4c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isStartingTransparent: 1
 --- !u!1 &8548267514860176280
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mNeedsType: 2
   mHoldingObjectType: 1
-  applyForceWhenDropped: 3
+  applyForceWhenDropped: 2
 --- !u!135 &4364626179964865518
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -66,11 +66,19 @@ public class ExitPopupManager : MonoBehaviour
     {
         if (Time.timeScale == 0)
         {
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.isGameInPlayState = true;
+            }
             Time.timeScale = 1;
         }
 
         else
         {
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.isGameInPlayState = false;
+            }
             Time.timeScale = 0;
         }
     }

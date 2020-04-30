@@ -48,6 +48,15 @@ public class PlayerManager : MonoBehaviour
         dissolver = GetComponentInChildren<DissolveMaterialCreatorController>();
     }
 
+    private void Start()
+    {
+        GameManager.instance.onLevelFinished += OnLevelFinished;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.instance.onLevelFinished -= OnLevelFinished;
+    }
     private void Update()
     {
         //DoubleBackExitApp();
@@ -133,6 +142,13 @@ public class PlayerManager : MonoBehaviour
 
         isHoldingSomething = false;
         currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
+        currentInteractableHold = null;
+        mAnimatorController.ResetAnimToLoco(); // resets the holding animation
+    }
+
+    private void OnLevelFinished()
+    {
+        isHoldingSomething = false;
         currentInteractableHold = null;
         mAnimatorController.ResetAnimToLoco(); // resets the holding animation
     }

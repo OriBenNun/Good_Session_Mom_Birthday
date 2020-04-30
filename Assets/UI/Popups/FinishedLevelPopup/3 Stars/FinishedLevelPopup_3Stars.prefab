@@ -210,7 +210,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u05DB\u05DC \u05D4\u05DB\u05D1\u05D5\u05D3!\n\u05D4\u05E4\u05D2\u05D9\u05E9\u05D4
-    \u05D4\u05E1\u05EA\u05D9\u05D9\u05DE\u05D4 \u05D1\u05D4\u05E6\u05DC\u05D7\u05D4!"
+    \u05D4\u05DE\u05D5\u05E6\u05DC\u05D7\u05EA \u05D4\u05E1\u05EA\u05D9\u05D9\u05DE\u05D4"
   m_isRightToLeft: 1
   m_fontAsset: {fileID: 11400000, guid: a34373ddc1a16c64ca704161a0d5adaa, type: 2}
   m_sharedMaterial: {fileID: 5281472680968901721, guid: a34373ddc1a16c64ca704161a0d5adaa,
@@ -377,7 +377,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279175682
+    rgba: 985602
   m_fontColor: {r: 0.007843138, g: 0.039215688, b: 0.05882353, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -3309,7 +3309,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279175682
+    rgba: 985602
   m_fontColor: {r: 0.007843138, g: 0.039215688, b: 0.05882353, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -6346,7 +6346,7 @@ MonoBehaviour:
   AutoHideAfterShowDelay: 3
   AutoSelectButtonAfterShow: 0
   AutoSelectPreviouslySelectedButtonAfterHide: 1
-  BlockBackButton: 1
+  BlockBackButton: 0
   CanvasName: MasterCanvas
   Container:
     Canvas: {fileID: 8353042574924579646}
@@ -6371,7 +6371,7 @@ MonoBehaviour:
     Labels:
     - {fileID: 7227951741868141836}
   DestroyAfterHide: 1
-  DisplayTarget: 0
+  DisplayTarget: 1
   HideBehavior:
     Animation:
       AnimationType: 2

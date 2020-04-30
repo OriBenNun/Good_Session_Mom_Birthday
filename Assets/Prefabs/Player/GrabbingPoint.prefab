@@ -45,4 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handR: {fileID: 0}
   handL: {fileID: 0}
-  moveSmoothSpeed: 5
+  moveSmoothSpeed: 2

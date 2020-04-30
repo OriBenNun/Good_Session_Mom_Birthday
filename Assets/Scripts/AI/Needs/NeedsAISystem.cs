@@ -49,11 +49,13 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
     private void OnDestroy()
     {
+        GameManager.instance.onLevelFinished -= OnLevelFinished;
         PlayerManager.instance.OnPlayerFinishedGiveAnimation -= PlayerFinishedGiveItemAnimation;
     }
 
     private void Start()
     {
+        GameManager.instance.onLevelFinished += OnLevelFinished;
         PlayerManager.instance.OnPlayerFinishedGiveAnimation += PlayerFinishedGiveItemAnimation; // singing here instead of OnEnable because of condition race, player is not ready on OnEnable.
 
         needsIndicator = GetComponent<NeedsIndicator>();
@@ -82,6 +84,11 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
                 StartCoroutine("FailToFulfillNeedInTime");
             }
         }
+    }
+
+    private void OnLevelFinished()
+    {
+        StopAllCoroutines();
     }
 
     private IEnumerator FailToFulfillNeedInTime()
@@ -214,8 +221,8 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
                 }
                 else
                 {
-                    // Todo fail SFX
-                    Debug.Log("First empty your hands");
+                    // fail SFX
+                    GameManager.instance.PlayClickFailSound();
                 }
             }
         }
@@ -382,7 +389,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
 
         if (playerHasFinishedGiveItemAnimation) { playerHasFinishedGiveItemAnimation = false; } // Because it happens from a event, which means all clients get the callback
         
-        PlayerManager.instance.SuccesfulClientNeedFulfilled(); // Todo add effects to player and add to score and shit
+        PlayerManager.instance.SuccesfulClientNeedFulfilled(); 
 
         // player give the object, animation and logical (the player get released from object and return to normal)
         StartCoroutine(playerHeld.OnFulfilledNeedBehaviour(this));
@@ -474,7 +481,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
         // destroy the current need indicator
         needsIndicator.DestroyNeedIndication();
 
-        PlayerManager.instance.SuccesfulClientNeedFulfilled(); // Todo add effects to player and add to score and shit
+        PlayerManager.instance.SuccesfulClientNeedFulfilled();
 
 
         #region Free the player, turn HoldPlayerHand to false and and fade the child out

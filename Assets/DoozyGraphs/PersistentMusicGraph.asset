@@ -82,8 +82,8 @@ MonoBehaviour:
   ErrorPlayActionHasNoSound: 0
   SoundData:
     SoundSource: 0
-    DatabaseName: Example Music
-    SoundName: Little Ludvig
+    DatabaseName: General
+    SoundName: BackgroundMusic
     AudioClip: {fileID: 0}
     OutputAudioMixerGroup: {fileID: 0}
   SoundAction: 0
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_version: 1
   m_description: 
   m_id: addab8f4-58d0-4701-a090-4e3dfe0a6956
-  m_lastModified: 132323637840477811
+  m_lastModified: 132327202334441125
 --- !u!114 &6733937667469042199
 MonoBehaviour:
   m_ObjectHideFlags: 1
