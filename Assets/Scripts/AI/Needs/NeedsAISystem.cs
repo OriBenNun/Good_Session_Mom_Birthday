@@ -98,6 +98,7 @@ public class NeedsAISystem : MonoBehaviour , IInteractable
     private IEnumerator FailToFulfillNeedInTime()
     {
         isInNeed = false;
+        if (!PlayerManager.instance.isPlayerAbleToControl) { yield return new WaitForSeconds(1.7f); }
 
         needsIndicator.TriggerExplodeAnimation();
         

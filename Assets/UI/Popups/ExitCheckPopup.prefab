@@ -1012,7 +1012,7 @@ MonoBehaviour:
       SoundData:
         SoundSource: 0
         DatabaseName: Example Alerts
-        SoundName: Cartoon Blooper
+        SoundName: Chatroom Leave
         AudioClip: {fileID: 0}
         OutputAudioMixerGroup: {fileID: 0}
     PresetCategory: Drop

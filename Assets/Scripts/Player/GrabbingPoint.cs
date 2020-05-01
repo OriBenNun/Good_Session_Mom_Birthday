@@ -7,7 +7,7 @@ public class GrabbingPoint : MonoBehaviour
     [SerializeField] Transform handR;
     [SerializeField] Transform handL; // << the gameobject is a child of this hand
 
-    [SerializeField] float moveSmoothSpeed = 5;
+    [SerializeField] float moveSmoothSpeedMultiplier = 10;
 
     Vector3 startingPos;
 
@@ -18,6 +18,6 @@ public class GrabbingPoint : MonoBehaviour
     private void Update()
     {
         Vector3 newPos = handL.position + (handR.position - handL.position) / 2;
-        transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * moveSmoothSpeed);
+        transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * moveSmoothSpeedMultiplier);
     }
 }

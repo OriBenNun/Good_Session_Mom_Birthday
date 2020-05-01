@@ -45,7 +45,8 @@ public class NeedsIndicator : MonoBehaviour
     {
         if (currentNeedObject != null)
         {
-            currentNeedObject.SetActive(!isHidden);
+            currentNeedObject.GetComponentInChildren<Renderer>().enabled = !isHidden;
+            currentCanvas.enabled = !isHidden;
         }
     }
 }
