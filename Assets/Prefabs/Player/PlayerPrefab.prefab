@@ -931,6 +931,11 @@ PrefabInstance:
       propertyPath: handL
       value: 
       objectReference: {fileID: 4398748249756679155}
+    - target: {fileID: 7805789561424106772, guid: cda38a209143cdf41889d31ed299dee9,
+        type: 3}
+      propertyPath: moveSmoothSpeedMultiplier
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cda38a209143cdf41889d31ed299dee9, type: 3}
 --- !u!4 &4187965162816169435 stripped

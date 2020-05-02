@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform toysParentTransform = null;
 
     [Header("General Gameplay Settings")]
-    [SerializeField] float levelTimeLengthSeconds = 120; // will not be updated during runtime if changed in inspector
+    [SerializeField] float levelTimeLengthSeconds = 90; // will not be updated during runtime if changed in inspector
+    [SerializeField] float failedProgressDecrease = .7f;
     [SerializeField] Transform[] clientsSpawnPoints;
     [SerializeField] Transform[] toysSpawnPoints;
 
@@ -314,7 +315,7 @@ public class GameManager : MonoBehaviour
             SoundyManager.Play(needFailedSound);
             if (currentLevelFulfilledNeeds > 0)
             {
-                currentLevelFulfilledNeeds--;
+                currentLevelFulfilledNeeds-= failedProgressDecrease;
             }
         }
         needsFulfilledProgressor.SetValue(currentLevelFulfilledNeeds);
@@ -374,6 +375,13 @@ public class GameManager : MonoBehaviour
 
     private void LevelFinished()
     {
+        // To fix a bug where you just fulfilled a need and the timer is over before the progress reached the third star, so manually changing it
+        needsFulfilledProgressor.SetValue(currentLevelFulfilledNeeds, true);
+        if (currentLevelFulfilledNeeds >= needsFulfilledProgressor.MaxValue)
+        {
+            numberOfStarsTurnedOn = 3;
+        }
+
         ToggleGameHUDUpdateAndPlayerController(false);
 
         onLevelFinished?.Invoke();

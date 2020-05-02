@@ -41,7 +41,7 @@ public class PickableToy : MonoBehaviour, IInteractable
     {
         if (isInClientUse) { return; }
 
-        if (!isPickedUp) // so be picked up by the player
+        if (!isPickedUp && !PlayerManager.instance.isHoldingSomething) // so be picked up by the player
         {
             BeingPicked();
         }
@@ -70,8 +70,8 @@ public class PickableToy : MonoBehaviour, IInteractable
     public void BeingPicked()
     {
         mAnimator.ToggleNavAndKinematic(true);
-        PlayerManager.instance.PickUpObject(this.gameObject);
         isPickedUp = true;
+        PlayerManager.instance.PickUpObject(this.gameObject);
 
         isInBetweenStates = false;
     }

@@ -1,0 +1,54 @@
+﻿#pragma kernel DoWindCalc
+
+//Wind effector data type
+struct WindEffector
+{
+	float3 pos;
+	float3 strength;
+	float radius;
+};
+
+//Variables for the wind effect
+float time;
+float scale;
+float3 amount;
+float3 objPos;
+bool effectorsExist;
+
+//All of the arrays transfered in and out of the shader
+StructuredBuffer<WindEffector> effectors;
+RWStructuredBuffer<float3> verts;
+
+[numthreads(1, 1, 1)]
+void DoWindCalc(uint2 id : SV_DispatchThreadID)
+{
+
+	//Checks if there are any wind effectors
+	if (effectorsExist)
+	{
+		//Calculates the wind for the wind effectors
+		if (distance(effectors[id.y].pos, verts[id.x] + objPos) < effectors[id.y].radius)
+		{
+			float3 dirVec = normalize(effectors[id.y].pos - verts[id.x]);
+			float falloffDist = distance(effectors[id.y].pos, verts[id.x]) / effectors[id.y].radius;
+			float3 falloff = lerp(effectors[id.y].strength, amount, falloffDist);
+			verts[id.x] += float3(sin((time + id.x + objPos.x) / scale) * falloff.x,
+				sin((time + id.x + objPos.y) / scale) * falloff.y,
+				sin((time + id.x + objPos.z) / scale) * falloff.z) * dirVec;
+		}
+		else
+		{
+			verts[id.x] += float3(sin((time + id.x + objPos.x) / scale) * amount.x,
+				sin((time + id.x + objPos.y) / scale) * amount.y,
+				sin((time + id.x + objPos.z) / scale) * amount.z);
+		}
+	}
+	else
+	{
+		//Calculates the wind without wind effectors
+		verts[id.x] += float3(sin((time + id.x + objPos.x) / scale) * amount.x,
+			sin((time + id.x + objPos.y) / scale) * amount.y,
+			sin((time + id.x + objPos.z) / scale) * amount.z);
+	}
+	
+}

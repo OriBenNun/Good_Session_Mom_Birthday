@@ -97,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mNeedsType: 2
   mHoldingObjectType: 1
-  applyForceWhenDropped: 2
+  applyForceWhenDropped: 3
 --- !u!135 &4364626179964865518
 SphereCollider:
   m_ObjectHideFlags: 0

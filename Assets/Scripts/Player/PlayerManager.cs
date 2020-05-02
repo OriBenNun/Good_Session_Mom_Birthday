@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
 
     public event Action OnPlayerFinishedGiveAnimation;
 
-    private bool isHoldingSomething = false;
+    public bool isHoldingSomething = false;
 
     private IInteractable currentInteractableHold = null;
 
@@ -113,8 +113,8 @@ public class PlayerManager : MonoBehaviour
 
     public void DropObject()
     {
-        if (currentInteractableHold == null) { return; }
         isHoldingSomething = false;
+        if (currentInteractableHold == null) { return; }
         currentInteractableHold.GetInteractableGameObject().transform.parent = interactablesParent;
         currentInteractableHold = null;
         mAnimatorController.ResetAnimToLoco(); // resets the holding animation
@@ -151,6 +151,10 @@ public class PlayerManager : MonoBehaviour
         isHoldingSomething = false;
         currentInteractableHold = null;
         mAnimatorController.ResetAnimToLoco(); // resets the holding animation
+        if (dissolver.GetIsVisible())
+        {
+            StopAllCoroutines();
+        }
     }
 
     public PlayerAnimatorController GetPlayerAnimatorController()
