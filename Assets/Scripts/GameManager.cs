@@ -110,12 +110,6 @@ public class GameManager : MonoBehaviour
                 LevelFinished();
             }
         }
-
-        // TODO REMOVE. FOR DEBUGGING
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            LevelFinished();
-        }
     }
     private IEnumerator DestroyCurrentLevel()
     {
@@ -185,7 +179,6 @@ public class GameManager : MonoBehaviour
             levelToLoad = levelsConfigs[0];
             currentLevelLoadedNumber = 1;
             Debug.LogError("Something is wrong with level loader on level number " + levelNumberToLoad + ". Probably u ran out of levels loading first level for now");
-            Debug.Break();
         }
 
         // if first level - dissolve the player - currently the player's start invisible is false, can change in inspector on the dissolver script)
