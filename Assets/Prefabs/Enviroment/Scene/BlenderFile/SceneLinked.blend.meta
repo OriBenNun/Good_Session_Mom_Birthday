@@ -7,8 +7,28 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: BookTexture
+    second: {fileID: 2100000, guid: 7080614c77d9da247b5c2601a4fc1eb7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: CarpetTexture
     second: {fileID: 2100000, guid: 4c4cd351ea72d224b916c1092e7c8cdf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Closet
+    second: {fileID: 2100000, guid: 3b0c6ffe55e147a4fb16d6bff0228741, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ClosetV3
+    second: {fileID: 2100000, guid: 3b0c6ffe55e147a4fb16d6bff0228741, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Couch_
+    second: {fileID: 2100000, guid: 1a80a69a10bff194e96f2f12429dce5a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -19,6 +39,31 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Grass
     second: {fileID: 2100000, guid: c0fd6b79d2b9eaf46949910dc2c1d80c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: KidsChairTexture
+    second: {fileID: 2100000, guid: 1a31ec700f7ef4b458089195fe2c90b9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: KidsTableTexture
+    second: {fileID: 2100000, guid: 834fff4af00a6ee41ac3fbfa9b86395f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TableCarpet
+    second: {fileID: 2100000, guid: 3fcfae92f12a18b42b36badaf87782a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TableTexure
+    second: {fileID: 2100000, guid: ed7c04109138fa54cb7380497ce71312, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WallShelf
+    second: {fileID: 2100000, guid: c84ad710475dcb04d8cbfa5bee47c333, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
