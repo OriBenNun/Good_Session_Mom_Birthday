@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: eb8475630912e7940ac311efc3c0577a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Gisha
+  fontNames:
+  - Gisha
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 390ac9ccb1c32714daf5549569f56134, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
